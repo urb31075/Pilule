@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+	namespace="NHibernateORM" assembly="NHibernateORM">
+  <class name="Catalog" table="Catalog">
+    <id name="id" column="id"> <generator class="identity"/> </id>
+    <property name="author" column="author"  />
+    <property name="book" column="book"  />
+  </class>
+</hibernate-mapping>
+
