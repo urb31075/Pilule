@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2016
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilule", "Pilule\Pilule.csproj", "{8842358C-A1B6-4023-88B8-1F83ECB96871}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticGrid", "ElasticGrid\ElasticGrid.csproj", "{4B218D8B-DC99-47E9-8F0C-DCBBB372580D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkORM", "EntityFrameworkORM\EntityFrameworkORM.csproj", "{AFFD2163-39FE-4856-AAF4-8D290D245D7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDetailGrid", "MasterDetailGrid\MasterDetailGrid.csproj", "{E243BE51-942F-42BC-964E-DF7AA1B99700}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiluleDAL", "PiluleDAL\PiluleDAL.csproj", "{35CA64E6-CE26-4B83-B535-A2D5F7F17E96}"
 EndProject
@@ -47,6 +49,10 @@ Global
 		{AFFD2163-39FE-4856-AAF4-8D290D245D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFFD2163-39FE-4856-AAF4-8D290D245D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFFD2163-39FE-4856-AAF4-8D290D245D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E243BE51-942F-42BC-964E-DF7AA1B99700}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E243BE51-942F-42BC-964E-DF7AA1B99700}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E243BE51-942F-42BC-964E-DF7AA1B99700}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E243BE51-942F-42BC-964E-DF7AA1B99700}.Release|Any CPU.Build.0 = Release|Any CPU
 		{35CA64E6-CE26-4B83-B535-A2D5F7F17E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{35CA64E6-CE26-4B83-B535-A2D5F7F17E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35CA64E6-CE26-4B83-B535-A2D5F7F17E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -54,8 +60,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {74DE5685-C8C9-4615-80DB-98F2F25BB8CF}
 	EndGlobalSection
 EndGlobal

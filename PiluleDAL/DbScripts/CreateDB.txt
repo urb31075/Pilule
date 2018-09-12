@@ -1,0 +1,3 @@
+﻿CREATE DATABASE Dupel
+	CHARACTER SET koi8r
+	COLLATE koi8r_general_ci;
