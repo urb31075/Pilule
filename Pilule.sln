@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilule", "Pilule\Pilule.csproj", "{8842358C-A1B6-4023-88B8-1F83ECB96871}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDetailGrid", "MasterDetailGrid\MasterDetailGrid.csproj", "{E243BE51-942F-42BC-964E-DF7AA1B99700}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiluleDAL", "PiluleDAL\PiluleDAL.csproj", "{35CA64E6-CE26-4B83-B535-A2D5F7F17E96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MordaWPF", "MordaWPF\MordaWPF.csproj", "{61A974F8-738B-4D7D-A5E5-07CE2B19D82A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,8 +59,15 @@ Global
 		{35CA64E6-CE26-4B83-B535-A2D5F7F17E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35CA64E6-CE26-4B83-B535-A2D5F7F17E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35CA64E6-CE26-4B83-B535-A2D5F7F17E96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61A974F8-738B-4D7D-A5E5-07CE2B19D82A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61A974F8-738B-4D7D-A5E5-07CE2B19D82A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61A974F8-738B-4D7D-A5E5-07CE2B19D82A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61A974F8-738B-4D7D-A5E5-07CE2B19D82A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8DFD3A0C-655E-4CBF-86EB-4A39237EB2AB}
 	EndGlobalSection
 EndGlobal

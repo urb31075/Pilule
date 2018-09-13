@@ -161,31 +161,36 @@ namespace PiluleDAL
             }
         }
 
-        public static IEnumerable<GoodsDictionary> ExecuteStorageProc()
+        public static IEnumerable<GoodsDictionary> ExecuteStorageProc(out int cnt)
         {
             try
             {
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                 {
-                    var infoList = db.Query<GoodsDictionary>("TestStorageProc", commandType:CommandType.StoredProcedure).ToList();
+                    var p = new DynamicParameters();
+                    p.Add("@maxId", 3, dbType: DbType.Int32, direction: ParameterDirection.Input);
+                    p.Add("@cnt", dbType:DbType.Int32, direction:ParameterDirection.Output);
+                    var infoList = db.Query<GoodsDictionary>("TestStorageProc", p, commandType:CommandType.StoredProcedure).ToList();
+                    cnt = p.Get<int>("@cnt");
                     return infoList;
                 }
             }
             catch (Exception ex)
             {
                 LastError = ex.Message;
+                cnt = -1;
                 return null;
             }
         }
 
         public static int ExecuteNonSelectCommand()
         {
+            const string Sql = "CREATE TABLE Pilule.XXX ( "
+                               + "Id INT(11) NOT NULL AUTO_INCREMENT, "
+                               + "PRIMARY KEY(Id)) "
+                               + "ENGINE = INNODB; ";
             try
             {
-                const string Sql = "CREATE TABLE Pilule.XXX ( " 
-                                   + "Id INT(11) NOT NULL AUTO_INCREMENT, " 
-                                   + "PRIMARY KEY(Id)) "
-                                   + "ENGINE = INNODB; ";
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                 {
                     var result = db.Execute(Sql);
@@ -308,6 +313,63 @@ namespace PiluleDAL
             }
         }
 
+        public static IEnumerable<GoodsAndBalance> MultiMapping()
+        {
+            const string Sql = "select gd.Id As Id, gd.Name, gd.Price, gd.Comment, sb.Id as StockBalanceId, sb.Amount  "
+                              +"from Pilule.GoodsDictionary gd "
+                              +"left join StockBalance sb on sb.GoodsId = gd.Id ";
+            try
+            {
+                using (IDbConnection db = new MySqlConnection(ConnectionString))
+                {
+                    var infoList = db.Query<GoodsDictionary, StockBalance, GoodsAndBalance>(Sql,
+                        (goods, balance) =>
+                            {
+                                var gb = new GoodsAndBalance
+                                    {
+                                        Id = goods.Id,
+                                        Name = goods.Name,
+                                        Price = goods.Price,
+                                        Comment = goods.Comment,
+                                        StockBalanceId = balance.StockBalanceId,
+                                        Amount = balance.Amount
+                                    };
+                                return gb;
+                            }, splitOn: "StockBalanceId").ToList();
+                    return infoList;
+                }
+            }
+            catch (Exception ex)
+            {
+                LastError = ex.Message;
+                return null;
+            }
+        }
+
+        public static Tuple<IEnumerable<GoodsDictionary>, IEnumerable<StockBalance>> MultiSelect()
+        {
+            const string Sql = "Select * from GoodsDictionary; Select * from StockBalance";
+
+            try
+            {
+                using (IDbConnection db = new MySqlConnection(ConnectionString))
+                {
+                    using (var multi = db.QueryMultiple(Sql))
+                    {
+                        var gd = multi.Read<GoodsDictionary>();
+                        var sb = multi.Read<StockBalance>();
+                        var infoList = new Tuple<IEnumerable<GoodsDictionary>, IEnumerable<StockBalance>>(gd, sb);
+                        return infoList;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LastError = ex.Message;
+                return null;
+            }
+        }
+
         /// <summary>
         /// The goods dictionary.
         /// </summary>
@@ -335,7 +397,7 @@ namespace PiluleDAL
 
             public override string ToString()
             {
-                return $"{this.Id} {this.Name} {this.Price} {this.Comment}";
+                return $"{this.Id} \"{this.Name}\" {this.Price} \"{this.Comment}\"";
             }
         }
 
@@ -345,6 +407,8 @@ namespace PiluleDAL
             /// Gets or sets the id.
             /// </summary>
             public int Id { get; set; }
+
+            public int StockBalanceId { get; set; }
 
             /// <summary>
             /// Gets or sets the name.
@@ -356,9 +420,45 @@ namespace PiluleDAL
             /// </summary>
             public decimal Amount { get; set; }
 
+
             public override string ToString()
             {
                 return $"{this.Id} {this.GoodsId} {this.Amount}";
+            }
+        }
+
+        public class GoodsAndBalance
+        {
+            /// <summary>
+            /// Gets or sets the id.
+            /// </summary>
+            public int Id { get; set; }
+
+            /// <summary>
+            /// Gets or sets the name.
+            /// </summary>
+            public string Name { get; set; }
+
+            /// <summary>
+            /// Gets or sets the price.
+            /// </summary>
+            public decimal Price { get; set; }
+
+            /// <summary>
+            /// Gets or sets the comment.
+            /// </summary>
+            public string Comment { get; set; }
+
+            public int StockBalanceId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the price.
+        /// </summary>
+        public decimal Amount { get; set; }
+
+            public override string ToString()
+            {
+                return $"{this.Id} \"{this.Name}\" {this.Price} \"{this.Comment}\" {this.StockBalanceId} {this.Amount}";
             }
         }
     }
