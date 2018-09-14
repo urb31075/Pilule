@@ -6,7 +6,6 @@
 //   Interaction logic for MainWindow.xaml
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-//<DataGridTextColumn Binding="{Binding Name}" Header="Наименование" Width="*"/>
 namespace MordaWPF
 {
     using System;
@@ -23,6 +22,9 @@ namespace MordaWPF
     /// </summary>
     public partial class MainWindow
     {
+        /// <summary>
+        /// The baskeеt.
+        /// </summary>
         private readonly ObservableCollection<BaskeеtData> baskeеt;
 
         /// <summary>
@@ -30,11 +32,9 @@ namespace MordaWPF
         /// </summary>
         public MainWindow()
         {
-            //https://habr.com/post/270413/
-            //https://www.codeproject.com/Articles/139629/A-Numeric-Up-Down-Control-for-WPF
-            //https://docs.microsoft.com/en-us/dotnet/framework/wpf/data/how-to-implement-property-change-notification
-
             this.InitializeComponent();
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
             this.baskeеt = new ObservableCollection<BaskeеtData>();
             this.MyGrid.ItemsSource = this.baskeеt;
             this.baskeеt.CollectionChanged += this.OnCollectionChanged;
@@ -44,6 +44,15 @@ namespace MordaWPF
             this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 2, Name = "zzz", Amount = 3, Price = 8 });
         }
 
+        /// <summary>
+        /// The on collection changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             var action = e.Action;
@@ -52,110 +61,210 @@ namespace MordaWPF
                 this.PositionAmount.Content = $"Позиций: {this.baskeеt.Count}";
             }
 
-            this.TotalSumm.Content = this.baskeеt.Sum(c => c.Summa).ToString(CultureInfo.InvariantCulture);
+            this.OnBaskeеtChanged();
         }
 
+        /// <summary>
+        /// The data grid selection changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void DataGridSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var item = this.MyGrid.SelectedItem as BaskeеtData;
-            if (item == null)
+            if (!(this.MyGrid.SelectedItem is BaskeеtData item))
             {
                 return;
             }
 
-            this.InfoLabelTop.Content = item.ToString();
-            this.InfoLabelBottom.Content = item.Name.ToString();
-
+            this.InfoTextBox.Text = item.ToString();
+            this.InfoLabelBottom.Content = item.Name;
         }
 
+        /// <summary>
+        /// The recalculate amount.
+        /// </summary>
+        /// <param name="up">
+        /// The up.
+        /// </param>
         private void RecalculateAmount(bool up)
         {
-            var item = this.MyGrid.SelectedItem as BaskeеtData;
-            if (item == null)
+            if (!(this.MyGrid.SelectedItem is BaskeеtData item))
             {
                 return;
             }
 
             if (up)
+            {
                 item.Amount++;
+            }
             else
+            {
                 item.Amount--;
+            }
         }
 
+        /// <summary>
+        /// The amount up click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void AmountUpClick(object sender, RoutedEventArgs e)
         {
             this.RecalculateAmount(true);
         }
 
+        /// <summary>
+        /// The amount down click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void AmountDownClick(object sender, RoutedEventArgs e)
         {
             this.RecalculateAmount(false);
         }
 
-
+        /// <summary>
+        /// The debug button click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void DebugButtonClick(object sender, RoutedEventArgs e)
         {
-            this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 2, Name = "zzz", Amount = 3, Price = 8});
+            this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 2, Name = "zzz", Amount = 3, Price = 8 });
         }
 
+        /// <summary>
+        /// The on baskeеt changed.
+        /// </summary>
         private void OnBaskeеtChanged()
         {
-            this.TotalSumm.Content = this.baskeеt.Sum(c => c.Summa).ToString(CultureInfo.InvariantCulture);
+            this.TotalSumm.Text = this.baskeеt.Sum(c => c.Summa).ToString(CultureInfo.InvariantCulture);
         }
 
+        /// <summary>
+        /// The button click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void ButtonClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        /// <summary>
+        /// The baskeеt data.
+        /// </summary>
         private class BaskeеtData : INotifyPropertyChanged
         {
+            /// <summary>
+            /// The baskeе chenged.
+            /// </summary>
             private readonly Action baskeеChenged;
+
+            /// <summary>
+            /// The amount.
+            /// </summary>
+            private int amount;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="BaskeеtData"/> class.
+            /// </summary>
+            /// <param name="baskeеChenged">
+            /// The baskeе chenged.
+            /// </param>
             public BaskeеtData(Action baskeеChenged)
             {
                 this.baskeеChenged = baskeеChenged;
             }
 
+            /// <inheritdoc />
+            /// <summary>
+            /// The property changed.
+            /// </summary>
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            /// <summary>
+            /// Gets or sets the id.
+            /// </summary>
             public int Id { private get; set; }
 
+            /// <summary>
+            /// Gets or sets the name.
+            /// </summary>
             public string Name { get; set; }
 
-            private int amount;
+            /// <summary>
+            /// Gets or sets the amount.
+            /// </summary>
             public int Amount
             {
-                get
-                {
-                    return this.amount;
-                }
+                get => this.amount;
                 set
                 {
-                    if (value >= 0)
+                    if (value < 0)
                     {
-                        this.amount = value;
-                        this.OnPropertyChanged("Amount");
-                        this.OnPropertyChanged("Summa");
-                        this.baskeеChenged?.Invoke();
+                        return;
                     }
+
+                    this.amount = value;
+                    this.OnPropertyChanged("Amount");
+                    this.OnPropertyChanged("Summa");
+                    this.baskeеChenged?.Invoke();
                 }
             }
 
+            /// <summary>
+            /// Gets or sets the price.
+            /// </summary>
             public decimal Price { private get; set; }
 
+            /// <summary>
+            /// Gets or sets the summa.
+            /// </summary>
             public decimal Summa
             {
-                set
-                {
-
-                } 
-
-                get
-                {
-                    return this.Amount * this.Price;
-                }
+                get => this.Amount * this.Price;
+                // ReSharper disable once ValueParameterNotUsed
+                set { } // Не удалять! Без это хрени биндинг датагрида выдает эксепшен
             }
 
+            /// <summary>
+            /// The to string.
+            /// </summary>
+            /// <returns>
+            /// The <see cref="string"/>.
+            /// </returns>
             public override string ToString()
             {
                 return $"{nameof(this.Id)}={this.Id}  {nameof(this.Name)}={this.Name} {nameof(this.Amount)}={this.Amount}";
             }
 
-            public event PropertyChangedEventHandler PropertyChanged;
-
+            /// <summary>
+            /// The on property changed.
+            /// </summary>
+            /// <param name="name">
+            /// The name.
+            /// </param>
             private void OnPropertyChanged(string name)
             {
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

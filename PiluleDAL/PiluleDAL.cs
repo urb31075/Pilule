@@ -93,6 +93,15 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The get debug value.
+        /// </summary>
+        /// <param name="table">
+        /// The table.
+        /// </param>
+        /// <returns>
+        /// Return the dynamic debug value
+        /// </returns>
         public static dynamic GetDebugValue(string table)
         {
             try
@@ -110,6 +119,12 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The get goods dictionary.
+        /// </summary>
+        /// <returns>
+        /// Return the GoodsDictionary
+        /// </returns>
         public static IEnumerable<GoodsDictionary> GetGoodsDictionary()
         {
             try
@@ -127,13 +142,22 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The get goods dictionary.
+        /// </summary>
+        /// <param name="id">
+        /// The id.
+        /// </param>
+        /// <returns>
+        /// Return the GoodsDictionary
+        /// </returns>
         public static IEnumerable<GoodsDictionary> GetGoodsDictionary(int id)
         {
             try
             {
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                 {
-                    var infoList = db.Query<GoodsDictionary>("Select * From GoodsDictionary where Id = @Id", new {Id = id}).ToList();
+                    var infoList = db.Query<GoodsDictionary>("Select * From GoodsDictionary where Id = @Id", new { Id = id }).ToList();
                     return infoList;
                 }
             }
@@ -144,6 +168,15 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The get goods dictionary.
+        /// </summary>
+        /// <param name="idlist">
+        /// The idlist.
+        /// </param>
+        /// <returns>
+        /// Return the GoodsDictionary
+        /// </returns>
         public static IEnumerable<GoodsDictionary> GetGoodsDictionary(List<int> idlist)
         {
             try
@@ -161,6 +194,15 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The execute storage proc.
+        /// </summary>
+        /// <param name="cnt">
+        /// The cnt.
+        /// </param>
+        /// <returns>
+        /// Return the GoodsDictionary
+        /// </returns>
         public static IEnumerable<GoodsDictionary> ExecuteStorageProc(out int cnt)
         {
             try
@@ -169,8 +211,11 @@ namespace PiluleDAL
                 {
                     var p = new DynamicParameters();
                     p.Add("@maxId", 3, dbType: DbType.Int32, direction: ParameterDirection.Input);
-                    p.Add("@cnt", dbType:DbType.Int32, direction:ParameterDirection.Output);
-                    var infoList = db.Query<GoodsDictionary>("TestStorageProc", p, commandType:CommandType.StoredProcedure).ToList();
+                    p.Add("@cnt", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                    var infoList = db.Query<GoodsDictionary>(
+                        "TestStorageProc",
+                        p,
+                        commandType: CommandType.StoredProcedure).ToList();
                     cnt = p.Get<int>("@cnt");
                     return infoList;
                 }
@@ -183,6 +228,12 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The execute non select command.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         public static int ExecuteNonSelectCommand()
         {
             const string Sql = "CREATE TABLE Pilule.XXX ( "
@@ -204,6 +255,12 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The drop data base.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         public static int DropDataBase()
         {
             try
@@ -222,6 +279,15 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The execute script.
+        /// </summary>
+        /// <param name="scriptName">
+        /// The script name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         public static int ExecuteScript(string scriptName)
         {
             try
@@ -250,6 +316,15 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The insert data execute.
+        /// </summary>
+        /// <param name="scriptName">
+        /// The script name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         public static int InsertDataExecute(string scriptName)
         {
             try
@@ -295,6 +370,15 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The insert data execute bulk.
+        /// </summary>
+        /// <param name="goodsDictionary">
+        /// The goods dictionary.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         public static int InsertDataExecuteBulk(IEnumerable<GoodsDictionary> goodsDictionary)
         {
             try
@@ -313,16 +397,22 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The multi mapping.
+        /// </summary>
+        /// <returns>
+        /// Return the GoodsAndBalance
+        /// </returns>
         public static IEnumerable<GoodsAndBalance> MultiMapping()
         {
             const string Sql = "select gd.Id As Id, gd.Name, gd.Price, gd.Comment, sb.Id as StockBalanceId, sb.Amount  "
-                              +"from Pilule.GoodsDictionary gd "
-                              +"left join StockBalance sb on sb.GoodsId = gd.Id ";
+                               + "from Pilule.GoodsDictionary gd left join StockBalance sb on sb.GoodsId = gd.Id ";
             try
             {
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                 {
-                    var infoList = db.Query<GoodsDictionary, StockBalance, GoodsAndBalance>(Sql,
+                    var infoList = db.Query<GoodsDictionary, StockBalance, GoodsAndBalance>(
+                        Sql,
                         (goods, balance) =>
                             {
                                 var gb = new GoodsAndBalance
@@ -335,7 +425,8 @@ namespace PiluleDAL
                                         Amount = balance.Amount
                                     };
                                 return gb;
-                            }, splitOn: "StockBalanceId").ToList();
+                            },
+                        splitOn: "StockBalanceId").ToList();
                     return infoList;
                 }
             }
@@ -346,6 +437,12 @@ namespace PiluleDAL
             }
         }
 
+        /// <summary>
+        /// The multi select.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Tuple"/>.
+        /// </returns>
         public static Tuple<IEnumerable<GoodsDictionary>, IEnumerable<StockBalance>> MultiSelect()
         {
             const string Sql = "Select * from GoodsDictionary; Select * from StockBalance";
@@ -395,12 +492,21 @@ namespace PiluleDAL
             /// </summary>
             public string Comment { get; set; }
 
+            /// <summary>
+            /// The to string.
+            /// </summary>
+            /// <returns>
+            /// The <see cref="string"/>.
+            /// </returns>
             public override string ToString()
             {
                 return $"{this.Id} \"{this.Name}\" {this.Price} \"{this.Comment}\"";
             }
         }
 
+        /// <summary>
+        /// The stock balance.
+        /// </summary>
         public class StockBalance
         {
             /// <summary>
@@ -408,6 +514,9 @@ namespace PiluleDAL
             /// </summary>
             public int Id { get; set; }
 
+            /// <summary>
+            /// Gets or sets the stock balance id.
+            /// </summary>
             public int StockBalanceId { get; set; }
 
             /// <summary>
@@ -420,13 +529,21 @@ namespace PiluleDAL
             /// </summary>
             public decimal Amount { get; set; }
 
-
+            /// <summary>
+            /// The to string.
+            /// </summary>
+            /// <returns>
+            /// The <see cref="string"/>.
+            /// </returns>
             public override string ToString()
             {
                 return $"{this.Id} {this.GoodsId} {this.Amount}";
             }
         }
 
+        /// <summary>
+        /// The goods and balance.
+        /// </summary>
         public class GoodsAndBalance
         {
             /// <summary>
@@ -449,6 +566,9 @@ namespace PiluleDAL
             /// </summary>
             public string Comment { get; set; }
 
+            /// <summary>
+            /// Gets or sets the stock balance id.
+            /// </summary>
             public int StockBalanceId { get; set; }
 
         /// <summary>
@@ -456,6 +576,12 @@ namespace PiluleDAL
         /// </summary>
         public decimal Amount { get; set; }
 
+            /// <summary>
+            /// The to string.
+            /// </summary>
+            /// <returns>
+            /// The <see cref="string"/>.
+            /// </returns>
             public override string ToString()
             {
                 return $"{this.Id} \"{this.Name}\" {this.Price} \"{this.Comment}\" {this.StockBalanceId} {this.Amount}";

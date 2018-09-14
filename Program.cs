@@ -1,26 +1,16 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Program.cs" company="urb31075">
-//  All Right Reserved 
-// </copyright>
-// <summary>
-//   Defines the Program type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
+
 namespace Pilule
 {
-    using System;
+    using System.Collections.Generic;
+    using System.IO.MemoryMappedFiles;
     using System.Linq;
+
     using PiluleDAL;
 
-    /// <summary>
-    /// The program.
-    /// </summary>
     internal class Program
     {
-        /// <summary>
-        /// The main.
-        /// </summary>
-        private static void Main()
+        private static void Main(string[] args)
         {
             // Console.WriteLine($"test ADO.NET   - {PiluleDal.CheckVersionAdoNet()}");
             // Console.WriteLine($"test DapperORM - {PiluleDal.CheckVersionDaperOrm()}");
@@ -54,22 +44,24 @@ namespace Pilule
                             new PiluleDal.GoodsDictionary { Name = "xxx", Price = 25, Comment = "nop" }
                         }));*/
 
-            var goodsDictionary = PiluleDal.ExecuteStorageProc(out var cnt);
+
+            int cnt;
+            var goodsDictionary = PiluleDal.ExecuteStorageProc(out cnt);
             goodsDictionary?.ToList().ForEach(Console.WriteLine);
             Console.WriteLine(cnt);
 
             /*goodsDictionary = PiluleDal.GetGoodsDictionary(3);
             goodsDictionary?.ToList().ForEach(Console.WriteLine);*/
 
-            // var goodsDictionary = PiluleDal.GetGoodsDictionary(new List<int> { 1, 3 });
-            // goodsDictionary?.ToList().ForEach(Console.WriteLine); 
+            //var goodsDictionary = PiluleDal.GetGoodsDictionary(new List<int> { 1, 3 });
+            //goodsDictionary?.ToList().ForEach(Console.WriteLine); 
 
-            // var tuple = PiluleDal.MultiSelect();
-            // tuple?.Item1?.ToList().ForEach(Console.WriteLine);
-            // tuple?.Item2?.ToList().ForEach(Console.WriteLine);
-             
-            // var result = PiluleDal.MultiMapping();
-            // result?.ToList().ForEach(Console.WriteLine);
+            //var tuple = PiluleDal.MultiSelect();
+            //tuple?.Item1?.ToList().ForEach(Console.WriteLine);
+            //tuple?.Item2?.ToList().ForEach(Console.WriteLine);
+
+            //var result = PiluleDal.MultiMapping();
+            //result?.ToList().ForEach(Console.WriteLine);
 
             /*var mmf = MemoryMappedFile.CreateNew("MyFileInFile", 1);
             using (var writer = mmf.CreateViewAccessor(0, 1))
