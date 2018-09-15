@@ -1,0 +1,173 @@
+﻿<Page
+    x:Class="MordaUWP.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MordaUWP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:primitives="using:Microsoft.Toolkit.Uwp.UI.Controls.Primitives"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="Gainsboro">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="90"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row ="0" Background="Gainsboro" BorderBrush="#FF316AC5" BorderThickness="2" >
+            <controls:DataGrid x:Name="MyGrid" SelectionChanged="DataGridSelectionChanged" IsReadOnly="True" AutoGenerateColumns="False" 
+                              CanUserResizeColumns="False" GridLinesVisibility="None" HeadersVisibility="Column"
+                              FontSize="16" RowHeight="40" Background="Gainsboro">
+                <controls:DataGrid.CellStyle>
+                    <Style TargetType="controls:DataGridCell">
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                    </Style>
+                </controls:DataGrid.CellStyle>
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTemplateColumn Header="Наименование" Width="*">
+                        <controls:DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="primitives:DataGridColumnHeader">
+                                <Setter Property="Background" Value="LightGray"/>
+                                <Setter Property="Foreground" Value="CornflowerBlue"/>
+                                <Setter Property="FontSize"   Value="20"/>
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </Style>
+                        </controls:DataGridTemplateColumn.HeaderStyle>
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text ="{Binding Name}"  VerticalContentAlignment="Center" BorderThickness ="0" Background="Gainsboro"/>
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="Кол-во" Width="80">
+                        <controls:DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="primitives:DataGridColumnHeader">
+                                <Setter Property="Background" Value="LightGray"/>
+                                <Setter Property="Foreground" Value="CornflowerBlue"/>
+                                <Setter Property="FontSize" Value="20"/>
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </Style>
+                        </controls:DataGridTemplateColumn.HeaderStyle>
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="20" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Name="TextBoxValue" Text ="{Binding Amount}" VerticalContentAlignment="Center" TextAlignment="Right" Grid.Column="0"  BorderThickness ="1" Background="Gainsboro"/>
+                                    <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
+                                        <Button x:Name="Increase" Click="AmountUpClick">
+                                            <Image Source="Images/MoveUp.png"/>
+                                        </Button>
+                                        <Button x:Name="Decrease" Click="AmountDownClick">
+                                            <Image Source="Images/MoveDown.png"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="Цена" Width="100" >
+                        <controls:DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="primitives:DataGridColumnHeader">
+                                <Setter Property="Background" Value="LightGray"/>
+                                <Setter Property="Foreground" Value="CornflowerBlue"/>
+                                <Setter Property="FontSize" Value="20"/>
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </controls:DataGridTemplateColumn.HeaderStyle>
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text ="{Binding Price}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness ="0" Background="Gainsboro"/>
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="Сумма" Width="100" >
+                        <controls:DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="primitives:DataGridColumnHeader">
+                                <Setter Property="Background" Value="LightGray"/>
+                                <Setter Property="Foreground" Value="CornflowerBlue"/>
+                                <Setter Property="FontSize" Value="22"/>
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </controls:DataGridTemplateColumn.HeaderStyle>
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text ="{Binding Summa}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness ="0" Background="Gainsboro"/>
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+        </Border>
+        <Border Grid.Row ="1" Background="#FF316AC5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Grid.Row="0" x:Name="CodLabel"        Text="0000000" FontSize="16" Foreground="White"/>
+                <TextBox Grid.Column="1" Grid.Row="0" x:Name="PriceLabel"      Text="00,00"   FontSize="16" Foreground="White"/>
+                <TextBox Grid.Column="2" Grid.Row="0" x:Name="AmountLabel"     Text="000,0"   FontSize="16" Foreground="White"/>
+                <TextBox Grid.Column="3" Grid.Row="0" x:Name="SummaLabel"      Text="0000,00" FontSize="16" Foreground="White"/>
+                <TextBox Grid.Column="0" Grid.Row="1" x:Name="InfoLabelBottom" Text="####"    FontSize="24" Foreground="White" Grid.ColumnSpan="4"/>
+            </Grid>
+        </Border>
+        <Border Grid.Row ="2" Background="Gainsboro" BorderBrush="#FF316AC5" BorderThickness="2" >
+            <TextBox Text ="000001" FontSize="40" VerticalContentAlignment="Center" Foreground="DarkBlue" Background="Gainsboro"/>
+        </Border>
+        <Border Grid.Row ="3" Background="#FF316AC5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBox x:Name="DocVid"          Grid.Row="0" Text="Вид документа:"   HorizontalAlignment="Left"   HorizontalContentAlignment="Left"  FontSize="16" Foreground="White"/>
+                <TextBox x:Name="DocNumber"       Grid.Row="1" Text="№ документа:"     HorizontalAlignment="Left"   HorizontalContentAlignment="Left"  FontSize="16" Foreground="White"/>
+                <TextBox x:Name="PositionAmount"  Grid.Row="2" Text="Позиций:"         HorizontalAlignment="Left"   HorizontalContentAlignment="Left"  FontSize="16" Foreground="White"/>
+                <TextBox x:Name="TotalSummLabel"  Grid.Row="0" Text="Сумма документа:" HorizontalAlignment="Right"  HorizontalContentAlignment="Right" FontSize="18" VerticalContentAlignment="Center" Foreground="White" Background="#FF316AC5" BorderThickness ="0" IsReadOnly="True" />
+                <TextBox x:Name="TotalSumm"       Grid.Row="1" Text="000,00"           HorizontalAlignment="Right"  HorizontalContentAlignment="Right" FontSize="53" VerticalContentAlignment="Center" Foreground="White" Background="#FF316AC5" BorderThickness ="0" IsReadOnly="True" Grid.RowSpan="2" />
+            </Grid>
+
+        </Border>
+        <Border Grid.Row ="4" Background="Gainsboro" BorderBrush="#FF316AC5" BorderThickness="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Button Content="X" FontWeight="Bold" Foreground="Red" Background="#FF0A8DD4" Height="21" VerticalAlignment="Top" Click="ButtonClick"/>
+                <TextBox Name="InfoTextBox" Text="debug" Grid.Column="1" Foreground="White" Background="#FF0A8DD4" IsReadOnly="True"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <TextBox Text="XXX1" HorizontalAlignment="Right"  Foreground="White" Background="#FF0A8DD4" IsReadOnly="True"/>
+                    <TextBox Text="XXX2" HorizontalAlignment="Right" Foreground="White" Background="#FF0A8DD4" IsReadOnly="True"/>
+                    <TextBox Text="XXX3" HorizontalAlignment="Right" Foreground="White" Background="#FF0A8DD4" IsReadOnly="True"/>
+                    <Button Content="DEBUG" Height="21" Click="DebugButtonClick"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>
