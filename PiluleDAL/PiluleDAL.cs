@@ -17,6 +17,8 @@ namespace PiluleDAL
     using System.Linq;
     using System.Reflection;
 
+    using AspectInjector.Broker;
+
     using Dapper;
     using MySql.Data.MySqlClient;
 
@@ -41,6 +43,8 @@ namespace PiluleDAL
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
+        [Inject(typeof(LoggingAspect))]
+        [DebugLogFileName(@"D:\\DebugLog.txt"), DebugLogMode(true)]
         public static bool CheckVersionAdoNet()
         {
             try
@@ -76,6 +80,8 @@ namespace PiluleDAL
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
+        [Inject(typeof(LoggingAspect))]
+        [DebugLogFileName(@"D:\\DebugLog.txt"), DebugLogMode(true)]
         public static bool CheckVersionDaperOrm()
         {
             try
