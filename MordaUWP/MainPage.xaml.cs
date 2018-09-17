@@ -8,22 +8,26 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace MordaUWP
 {
-    using System;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
-    using System.ComponentModel;
     using System.Globalization;
     using System.Linq;
+
+    using PiluleDataProvider;
 
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
 
-    /// <inheritdoc cref="" />
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class MainPage
     {
+        /// <summary>
+        /// The pilule data provider.
+        /// </summary>
+        private readonly IPiluleDataProvider piluleDataProvider;
+
         /// <summary>
         /// The baskeеt.
         /// </summary>
@@ -36,12 +40,10 @@ namespace MordaUWP
         {
             this.InitializeComponent();
             this.baskeеt = new ObservableCollection<BaskeеtData>();
+            this.piluleDataProvider = new WorkDataProvider();
+            this.baskeеt = this.piluleDataProvider.GetData(this.OnBaskeеtChanged);
             this.MyGrid.ItemsSource = this.baskeеt;
             this.baskeеt.CollectionChanged += this.OnCollectionChanged;
-
-            this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 0, Name = "xxx", Amount = 1, Price = 2 });
-            this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 1, Name = "yyy", Amount = 2, Price = 4 });
-            this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 2, Name = "zzz", Amount = 3, Price = 8 });
         }
 
         /// <summary>
@@ -146,7 +148,7 @@ namespace MordaUWP
         /// </param>
         private void DebugButtonClick(object sender, RoutedEventArgs e)
         {
-            this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 2, Name = "zzz", Amount = 3, Price = 8 });
+            this.baskeеt.Add(this.piluleDataProvider.GetGood(this.OnBaskeеtChanged));
         }
 
         /// <summary>
@@ -155,120 +157,6 @@ namespace MordaUWP
         private void OnBaskeеtChanged()
         {
             this.TotalSumm.Text = this.baskeеt.Sum(c => c.Summa).ToString(CultureInfo.InvariantCulture);
-        }
-
-        /// <summary>
-        /// The button click.
-        /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The e.
-        /// </param>
-        private void ButtonClick(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        /// <summary>
-        /// The baskeеt data.
-        /// </summary>
-        private class BaskeеtData : INotifyPropertyChanged
-        {
-            /// <summary>
-            /// The baskeе chenged.
-            /// </summary>
-            private readonly Action baskeеChenged;
-
-            /// <summary>
-            /// The amount.
-            /// </summary>
-            private int amount;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="BaskeеtData"/> class.
-            /// </summary>
-            /// <param name="baskeеChenged">
-            /// The baskeе chenged.
-            /// </param>
-            public BaskeеtData(Action baskeеChenged)
-            {
-                this.baskeеChenged = baskeеChenged;
-            }
-
-            /// <inheritdoc />
-            /// <summary>
-            /// The property changed.
-            /// </summary>
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            /// <summary>
-            /// Gets or sets the id.
-            /// </summary>
-            public int Id { private get; set; }
-
-            /// <summary>
-            /// Gets or sets the name.
-            /// </summary>
-            public string Name { get; set; }
-
-            /// <summary>
-            /// Gets or sets the amount.
-            /// </summary>
-            public int Amount
-            {
-                get => this.amount;
-                set
-                {
-                    if (value < 0)
-                    {
-                        return;
-                    }
-
-                    this.amount = value;
-                    this.OnPropertyChanged("Amount");
-                    this.OnPropertyChanged("Summa");
-                    this.baskeеChenged?.Invoke();
-                }
-            }
-
-            /// <summary>
-            /// Gets or sets the price.
-            /// </summary>
-            public decimal Price { private get; set; }
-
-            /// <summary>
-            /// Gets or sets the summa.
-            /// </summary>
-            public decimal Summa
-            {
-                get => this.Amount * this.Price;
-                // ReSharper disable once ValueParameterNotUsed
-                set { } // Не удалять! Без это хрени биндинг датагрида выдает эксепшен
-            }
-
-            /// <summary>
-            /// The to string.
-            /// </summary>
-            /// <returns>
-            /// The <see cref="string"/>.
-            /// </returns>
-            public override string ToString()
-            {
-                return $"{nameof(this.Id)}={this.Id}  {nameof(this.Name)}={this.Name} {nameof(this.Amount)}={this.Amount}";
-            }
-
-            /// <summary>
-            /// The on property changed.
-            /// </summary>
-            /// <param name="name">
-            /// The name.
-            /// </param>
-            private void OnPropertyChanged(string name)
-            {
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }
         }
     }
 }

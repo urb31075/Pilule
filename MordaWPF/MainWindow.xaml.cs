@@ -8,14 +8,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace MordaWPF
 {
-    using System;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
-    using System.ComponentModel;
     using System.Globalization;
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
+    using PiluleDataProvider;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,25 +22,29 @@ namespace MordaWPF
     public partial class MainWindow
     {
         /// <summary>
+        /// The pilule data provider.
+        /// </summary>
+        private readonly IPiluleDataProvider piluleDataProvider;
+
+        /// <summary>
         /// The baskeеt.
         /// </summary>
         private readonly ObservableCollection<BaskeеtData> baskeеt;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// Initializes a new instance of the <see cref="T:MordaWPF.MainWindow" /> class.
         /// </summary>
-        public MainWindow()
+        /// <param name="piluleDataProvider">
+        /// The pilule Data Provider.
+        /// </param>
+        public MainWindow(IPiluleDataProvider piluleDataProvider)
         {
+            this.piluleDataProvider = piluleDataProvider;
             this.InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-
-            this.baskeеt = new ObservableCollection<BaskeеtData>();
+            this.baskeеt = this.piluleDataProvider.GetData(this.OnBaskeеtChanged);
             this.MyGrid.ItemsSource = this.baskeеt;
             this.baskeеt.CollectionChanged += this.OnCollectionChanged;
-
-            this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 0, Name = "xxx", Amount = 1, Price = 2 });
-            this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 1, Name = "yyy", Amount = 2, Price = 4 });
-            this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 2, Name = "zzz", Amount = 3, Price = 8 });
         }
 
         /// <summary>
@@ -56,7 +59,7 @@ namespace MordaWPF
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             var action = e.Action;
-            if ((action == NotifyCollectionChangedAction.Add) || (action == NotifyCollectionChangedAction.Remove))
+            if (action == NotifyCollectionChangedAction.Add || (action == NotifyCollectionChangedAction.Remove))
             {
                 this.PositionAmount.Content = $"Позиций: {this.baskeеt.Count}";
             }
@@ -146,7 +149,7 @@ namespace MordaWPF
         /// </param>
         private void DebugButtonClick(object sender, RoutedEventArgs e)
         {
-            this.baskeеt.Add(new BaskeеtData(this.OnBaskeеtChanged) { Id = 2, Name = "zzz", Amount = 3, Price = 8 });
+            this.baskeеt.Add(this.piluleDataProvider.GetGood(this.OnBaskeеtChanged));
         }
 
         /// <summary>
@@ -154,6 +157,11 @@ namespace MordaWPF
         /// </summary>
         private void OnBaskeеtChanged()
         {
+            if (this.baskeеt == null)
+            {
+                return;
+            }
+
             this.TotalSumm.Text = this.baskeеt.Sum(c => c.Summa).ToString(CultureInfo.InvariantCulture);
         }
 
@@ -169,106 +177,6 @@ namespace MordaWPF
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
-
-        /// <summary>
-        /// The baskeеt data.
-        /// </summary>
-        private class BaskeеtData : INotifyPropertyChanged
-        {
-            /// <summary>
-            /// The baskeе chenged.
-            /// </summary>
-            private readonly Action baskeеChenged;
-
-            /// <summary>
-            /// The amount.
-            /// </summary>
-            private int amount;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="BaskeеtData"/> class.
-            /// </summary>
-            /// <param name="baskeеChenged">
-            /// The baskeе chenged.
-            /// </param>
-            public BaskeеtData(Action baskeеChenged)
-            {
-                this.baskeеChenged = baskeеChenged;
-            }
-
-            /// <inheritdoc />
-            /// <summary>
-            /// The property changed.
-            /// </summary>
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            /// <summary>
-            /// Gets or sets the id.
-            /// </summary>
-            public int Id { private get; set; }
-
-            /// <summary>
-            /// Gets or sets the name.
-            /// </summary>
-            public string Name { get; set; }
-
-            /// <summary>
-            /// Gets or sets the amount.
-            /// </summary>
-            public int Amount
-            {
-                get => this.amount;
-                set
-                {
-                    if (value < 0)
-                    {
-                        return;
-                    }
-
-                    this.amount = value;
-                    this.OnPropertyChanged("Amount");
-                    this.OnPropertyChanged("Summa");
-                    this.baskeеChenged?.Invoke();
-                }
-            }
-
-            /// <summary>
-            /// Gets or sets the price.
-            /// </summary>
-            public decimal Price { private get; set; }
-
-            /// <summary>
-            /// Gets or sets the summa.
-            /// </summary>
-            public decimal Summa
-            {
-                get => this.Amount * this.Price;
-                // ReSharper disable once ValueParameterNotUsed
-                set { } // Не удалять! Без это хрени биндинг датагрида выдает эксепшен
-            }
-
-            /// <summary>
-            /// The to string.
-            /// </summary>
-            /// <returns>
-            /// The <see cref="string"/>.
-            /// </returns>
-            public override string ToString()
-            {
-                return $"{nameof(this.Id)}={this.Id}  {nameof(this.Name)}={this.Name} {nameof(this.Amount)}={this.Amount}";
-            }
-
-            /// <summary>
-            /// The on property changed.
-            /// </summary>
-            /// <param name="name">
-            /// The name.
-            /// </param>
-            private void OnPropertyChanged(string name)
-            {
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }
         }
     }
 }

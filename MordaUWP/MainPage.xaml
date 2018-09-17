@@ -159,7 +159,6 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <Button Content="X" FontWeight="Bold" Foreground="Red" Background="#FF0A8DD4" Height="21" VerticalAlignment="Top" Click="ButtonClick"/>
                 <TextBox Name="InfoTextBox" Text="debug" Grid.Column="1" Foreground="White" Background="#FF0A8DD4" IsReadOnly="True"/>
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
                     <TextBox Text="XXX1" HorizontalAlignment="Right"  Foreground="White" Background="#FF0A8DD4" IsReadOnly="True"/>
