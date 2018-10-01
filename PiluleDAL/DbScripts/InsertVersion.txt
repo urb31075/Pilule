@@ -1,0 +1,1 @@
+﻿INSERT INTO Dupel.Version(info) VALUES ('ver1.5');

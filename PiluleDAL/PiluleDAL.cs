@@ -16,8 +16,7 @@ namespace PiluleDAL
     using System.IO;
     using System.Linq;
     using System.Reflection;
-
-    using AspectInjector.Broker;
+    using System.Threading.Tasks;
 
     using Dapper;
     using MySql.Data.MySqlClient;
@@ -30,7 +29,8 @@ namespace PiluleDAL
         /// <summary>
         /// The connection string.
         /// </summary>
-        private const string ConnectionString = @"User Id=developer; pwd=dupel; Host=192.168.168.7;Character Set=utf8; Database=Pilule; SslMode = none;";
+        private const string ConnectionString = @"User Id=developer; pwd=dupel; Host=192.168.168.7;Character Set=utf8; SslMode = none;";
+        //private const string ConnectionString = @"User Id=pilule; pwd=xxxxxx; Host=urb31075.ru; Port=3306; Character Set=utf8; SslMode = none;";
 
         /// <summary>
         /// Gets the last error.
@@ -40,12 +40,13 @@ namespace PiluleDAL
         /// <summary>
         /// The test reading.
         /// </summary>
+        /// <param name="marker">
+        /// The marker.
+        /// </param>
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        [Inject(typeof(LoggingAspect))]
-        [DebugLogFileName(@"D:\\DebugLog.txt"), DebugLogMode(true)]
-        public static bool CheckVersionAdoNet()
+        public static bool CheckVersionAdoNet(string marker)
         {
             try
          {
@@ -54,7 +55,7 @@ namespace PiluleDAL
              var cmd = new MySqlCommand
              {
                  Connection = conn,
-                 CommandText = "select * from Version"
+                 CommandText = "select * from Dupel.Version"
              };
 
              var reader = cmd.ExecuteReader();
@@ -66,7 +67,7 @@ namespace PiluleDAL
              }
 
              conn.Close();
-             return infoList.Contains("ver1.0");
+             return infoList.Contains(marker);
          }
          catch (Exception)
          {
@@ -77,19 +78,20 @@ namespace PiluleDAL
         /// <summary>
         /// The check version daper orm.
         /// </summary>
+        /// <param name="marker">
+        /// The marker.
+        /// </param>
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        [Inject(typeof(LoggingAspect))]
-        [DebugLogFileName(@"D:\\DebugLog.txt"), DebugLogMode(true)]
-        public static bool CheckVersionDaperOrm()
+        public static bool CheckVersionDaperOrm(string marker)
         {
             try
             {
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                 {
-                    var infoList = db.Query<string>("Select info From Version").ToList();
-                    return infoList.Contains("ver1.0");
+                    var infoList = db.Query<string>("Select info From Dupel.Version").ToList();
+                    return infoList.Contains(marker);
                 }
             }
             catch (Exception ex)
@@ -106,7 +108,7 @@ namespace PiluleDAL
         /// The table.
         /// </param>
         /// <returns>
-        /// Return the dynamic debug value
+        /// Возврат тестового значения
         /// </returns>
         public static dynamic GetDebugValue(string table)
         {
@@ -126,10 +128,33 @@ namespace PiluleDAL
         }
 
         /// <summary>
+        /// The get stock balance.
+        /// </summary>
+        /// <returns>
+        /// The return StockBalance
+        /// </returns>
+        public static IEnumerable<StockBalance> GetStockBalance()
+        {
+            try
+            {
+                using (IDbConnection db = new MySqlConnection(ConnectionString))
+                {
+                    var infoList = db.Query<StockBalance>("Select * From Dupel.StockBalance").ToList();
+                    return infoList;
+                }
+            }
+            catch (Exception ex)
+            {
+                LastError = ex.Message;
+                return null;
+            }
+        }
+
+        /// <summary>
         /// The get goods dictionary.
         /// </summary>
         /// <returns>
-        /// Return the GoodsDictionary
+        /// The The return GoodsDictionary
         /// </returns>
         public static IEnumerable<GoodsDictionary> GetGoodsDictionary()
         {
@@ -137,7 +162,7 @@ namespace PiluleDAL
             {
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                 {
-                    var infoList = db.Query<GoodsDictionary>("Select * From GoodsDictionary").ToList();
+                    var infoList = db.Query<GoodsDictionary>("Select * From Dupel.GoodsDictionary").ToList();
                     return infoList;
                 }
             }
@@ -155,7 +180,7 @@ namespace PiluleDAL
         /// The id.
         /// </param>
         /// <returns>
-        /// Return the GoodsDictionary
+        /// The The return GoodsDictionary
         /// </returns>
         public static IEnumerable<GoodsDictionary> GetGoodsDictionary(int id)
         {
@@ -163,7 +188,7 @@ namespace PiluleDAL
             {
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                 {
-                    var infoList = db.Query<GoodsDictionary>("Select * From GoodsDictionary where Id = @Id", new { Id = id }).ToList();
+                    var infoList = db.Query<GoodsDictionary>("Select * From Dupel.GoodsDictionary where Id = @Id", new { Id = id }).ToList();
                     return infoList;
                 }
             }
@@ -181,7 +206,7 @@ namespace PiluleDAL
         /// The idlist.
         /// </param>
         /// <returns>
-        /// Return the GoodsDictionary
+        /// The The return GoodsDictionary
         /// </returns>
         public static IEnumerable<GoodsDictionary> GetGoodsDictionary(List<int> idlist)
         {
@@ -189,7 +214,7 @@ namespace PiluleDAL
             {
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                 {
-                    var infoList = db.Query<GoodsDictionary>("Select * From GoodsDictionary where Id in @idlist", new { idlist }).ToList();
+                    var infoList = db.Query<GoodsDictionary>("Select * From Dupel.GoodsDictionary where Id in @idlist", new { idlist }).ToList();
                     return infoList;
                 }
             }
@@ -203,23 +228,26 @@ namespace PiluleDAL
         /// <summary>
         /// The execute storage proc.
         /// </summary>
+        /// <param name="maxId">
+        /// The max id.
+        /// </param>
         /// <param name="cnt">
         /// The cnt.
         /// </param>
         /// <returns>
-        /// Return the GoodsDictionary
+        /// The return GoodsDictionary
         /// </returns>
-        public static IEnumerable<GoodsDictionary> ExecuteStorageProc(out int cnt)
+        public static IEnumerable<GoodsDictionary> ExecuteStorageProc(int maxId, out int cnt)
         {
             try
             {
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                 {
                     var p = new DynamicParameters();
-                    p.Add("@maxId", 3, dbType: DbType.Int32, direction: ParameterDirection.Input);
+                    p.Add("@maxId", maxId, dbType: DbType.Int32, direction: ParameterDirection.Input);
                     p.Add("@cnt", dbType: DbType.Int32, direction: ParameterDirection.Output);
                     var infoList = db.Query<GoodsDictionary>(
-                        "TestStorageProc",
+                        "Dupel.TestStorageProc",
                         p,
                         commandType: CommandType.StoredProcedure).ToList();
                     cnt = p.Get<int>("@cnt");
@@ -242,7 +270,7 @@ namespace PiluleDAL
         /// </returns>
         public static int ExecuteNonSelectCommand()
         {
-            const string Sql = "CREATE TABLE Pilule.XXX ( "
+            const string Sql = "CREATE TABLE Dupel.XXX ( "
                                + "Id INT(11) NOT NULL AUTO_INCREMENT, "
                                + "PRIMARY KEY(Id)) "
                                + "ENGINE = INNODB; ";
@@ -286,6 +314,24 @@ namespace PiluleDAL
         }
 
         /// <summary>
+        /// The drop data base async.
+        /// </summary>
+        /// <param name="outLog">
+        /// The out log.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
+        public static async Task<int> DropDataBaseAsync(Action<string> outLog)
+        {
+            var result = -1;
+            outLog?.Invoke(@"Execute DropDataBaseAsync");
+            await Task.Run(() => { result = DropDataBase(); });
+            outLog?.Invoke(result < 0 ? $"DropDataBase Error: {LastError}" : "DropDataBase Done!");
+            return result;
+        }
+
+        /// <summary>
         /// The execute script.
         /// </summary>
         /// <param name="scriptName">
@@ -320,6 +366,27 @@ namespace PiluleDAL
                 LastError = ex.Message;
                 return -1;
             }
+        }
+
+        /// <summary>
+        /// The execute script async.
+        /// </summary>
+        /// <param name="scriptName">
+        /// The script name.
+        /// </param>
+        /// <param name="outLog">
+        /// The out log.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
+        public static async Task<int> ExecuteScriptAsync(string scriptName, Action<string> outLog)
+        {
+            var result = -1;
+            outLog?.Invoke($"ExecuteScript: {scriptName}");
+            await Task.Run(() => { result = ExecuteScript(scriptName); });
+            outLog?.Invoke(result < 0 ? $"ExecuteScript Error: {LastError}" : "ExecuteScript Done!");
+            return result;
         }
 
         /// <summary>
@@ -377,7 +444,7 @@ namespace PiluleDAL
         }
 
         /// <summary>
-        /// The insert data execute bulk.
+        /// The insert goods dictionary.
         /// </summary>
         /// <param name="goodsDictionary">
         /// The goods dictionary.
@@ -385,11 +452,11 @@ namespace PiluleDAL
         /// <returns>
         /// The <see cref="int"/>.
         /// </returns>
-        public static int InsertDataExecuteBulk(IEnumerable<GoodsDictionary> goodsDictionary)
+        public static int InsertGoodsDictionary(IEnumerable<GoodsDictionary> goodsDictionary)
         {
             try
             {
-                const string Sql = "INSERT INTO Dupel.GoodsDictionary(Name, Price, Comment) VALUES(@Name, @Price, @Comment)";
+                const string Sql = "INSERT INTO Dupel.GoodsDictionary(Code, Name, Price, Comment) VALUES(@Code, @Name, @Price, @Comment)";
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                    {
                        var result = db.Execute(Sql, goodsDictionary);
@@ -404,15 +471,87 @@ namespace PiluleDAL
         }
 
         /// <summary>
+        /// The insert goods dictionary async.
+        /// </summary>
+        /// <param name="goodsDictionary">
+        /// The goods dictionary.
+        /// </param>
+        /// <param name="outLog">
+        /// The out log.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
+        public static async Task<int> InsertGoodsDictionaryAsync(IEnumerable<GoodsDictionary> goodsDictionary, Action<string> outLog)
+        {
+            var result = -1;
+            var goodsDictionaries = goodsDictionary as IList<GoodsDictionary> ?? goodsDictionary.ToList();
+            outLog?.Invoke($"InsertGoodsDictionary: {goodsDictionaries.Count} Elements to Add");
+            await Task.Run(() => { result = InsertGoodsDictionary(goodsDictionaries); });
+            outLog?.Invoke(result < 0 ? $"InsertGoodsDictionary Error: {LastError}" : "InsertGoodsDictionary Done!");
+            return result;
+        }
+
+        /// <summary>
+        /// The insert stock balance.
+        /// </summary>
+        /// <param name="stockBalance">
+        /// The stock balance.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
+        public static int InsertStockBalance(IEnumerable<StockBalance> stockBalance)
+        {
+            try
+            {
+                const string Sql = "INSERT INTO Dupel.StockBalance(GoodsId, Amount) VALUES(@GoodsId, @Amount)";
+                using (IDbConnection db = new MySqlConnection(ConnectionString))
+                {
+                    var result = db.Execute(Sql, stockBalance);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                LastError = ex.Message;
+                return -1;
+            }
+        }
+
+        /// <summary>
+        /// The insert stock balance async.
+        /// </summary>
+        /// <param name="stockBalance">
+        /// The stock balance.
+        /// </param>
+        /// <param name="outLog">
+        /// The out log.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
+        public static async Task<int> InsertStockBalanceAsync(IEnumerable<StockBalance> stockBalance, Action<string> outLog)
+        {
+            var result = -1;
+            var stockBalances = stockBalance as IList<StockBalance> ?? stockBalance.ToList();
+            outLog?.Invoke($"InsertStockBalance: {stockBalances.Count} Elements to Add");
+            await Task.Run(() => { result = InsertStockBalance(stockBalances); });
+            outLog?.Invoke(result < 0 ? $"InsertStockBalance Error: {LastError}" : "InsertStockBalance Done!");
+            return result;
+        }
+
+        /// <summary>
         /// The multi mapping.
         /// </summary>
         /// <returns>
-        /// Return the GoodsAndBalance
+        /// The The return GoodsDictionary and StockBalance
         /// </returns>
         public static IEnumerable<GoodsAndBalance> MultiMapping()
         {
             const string Sql = "select gd.Id As Id, gd.Name, gd.Price, gd.Comment, sb.Id as StockBalanceId, sb.Amount  "
-                               + "from Pilule.GoodsDictionary gd left join StockBalance sb on sb.GoodsId = gd.Id ";
+                               + "from Dupel.GoodsDictionary gd "
+                               + "left join Dupel.StockBalance sb on sb.GoodsId = gd.Id ";
             try
             {
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
@@ -451,7 +590,7 @@ namespace PiluleDAL
         /// </returns>
         public static Tuple<IEnumerable<GoodsDictionary>, IEnumerable<StockBalance>> MultiSelect()
         {
-            const string Sql = "Select * from GoodsDictionary; Select * from StockBalance";
+            const string Sql = "Select * from Dupel.GoodsDictionary; Select * from Dupel.StockBalance";
 
             try
             {
@@ -484,6 +623,11 @@ namespace PiluleDAL
             public int Id { get; set; }
 
             /// <summary>
+            /// Gets or sets the code.
+            /// </summary>
+            public string Code { get; set; }
+
+            /// <summary>
             /// Gets or sets the name.
             /// </summary>
             public string Name { get; set; }
@@ -506,7 +650,7 @@ namespace PiluleDAL
             /// </returns>
             public override string ToString()
             {
-                return $"{this.Id} \"{this.Name}\" {this.Price} \"{this.Comment}\"";
+                return $"{this.Id} \"{this.Code}\" \"{this.Name}\" {this.Price} \"{this.Comment}\"";
             }
         }
 

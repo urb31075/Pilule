@@ -1,16 +1,15 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Program.cs" company="urb31075">
-//  All Right Reserved 
+//  All REight Reserved 
 // </copyright>
 // <summary>
 //   Defines the Program type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace Pilule
 {
     using System;
-    using System.Linq;
-    using PiluleDAL;
 
     /// <summary>
     /// The program.
@@ -20,57 +19,11 @@ namespace Pilule
         /// <summary>
         /// The main.
         /// </summary>
-        private static void Main()
+        /// <param name="args">
+        /// The args.
+        /// </param>
+        private static void Main(string[] args)
         {
-            // Console.WriteLine($"test ADO.NET   - {PiluleDal.CheckVersionAdoNet()}");
-            // Console.WriteLine($"test DapperORM - {PiluleDal.CheckVersionDaperOrm()}");
-
-            /*var debugValue = PiluleDal.GetDebugValue("GoodsDictionary");
-            if (debugValue != null)
-            {
-                foreach (var items in debugValue) //foreach (ICollection<KeyValuePair<string, object>> items in debugValue)
-                {
-                    foreach (var item in items)
-                    {
-                        Console.Write($"{item.Key}={item.Value} ");
-                    }
-                    Console.WriteLine();
-                }
-            }*/
-
-            // var result = PiluleDal.ExecuteNonSelectCommand();
-
-            /*Console.WriteLine(PiluleDal.DropDataBase());
-            Console.WriteLine(PiluleDal.ExecuteScript("CreateDB"));
-            Console.WriteLine(PiluleDal.ExecuteScript("CreateTable_Version"));
-            Console.WriteLine(PiluleDal.ExecuteScript("CreateTable_GoodsDictionary"));
-            Console.WriteLine(PiluleDal.ExecuteScript("CreateTable_StockBalance"));
-            Console.WriteLine(PiluleDal.InsertDataExecute("DupelData"));
-
-            Console.WriteLine(
-                PiluleDal.InsertDataExecuteBulk(
-                    new List<PiluleDal.GoodsDictionary>
-                        {
-                            new PiluleDal.GoodsDictionary { Name = "xxx", Price = 25, Comment = "nop" }
-                        }));*/
-
-            var goodsDictionary = PiluleDal.ExecuteStorageProc(out var cnt);
-            goodsDictionary?.ToList().ForEach(Console.WriteLine);
-            Console.WriteLine(cnt);
-
-            /*goodsDictionary = PiluleDal.GetGoodsDictionary(3);
-            goodsDictionary?.ToList().ForEach(Console.WriteLine);*/
-
-            // var goodsDictionary = PiluleDal.GetGoodsDictionary(new List<int> { 1, 3 });
-            // goodsDictionary?.ToList().ForEach(Console.WriteLine); 
-
-            // var tuple = PiluleDal.MultiSelect();
-            // tuple?.Item1?.ToList().ForEach(Console.WriteLine);
-            // tuple?.Item2?.ToList().ForEach(Console.WriteLine);
-             
-            // var result = PiluleDal.MultiMapping();
-            // result?.ToList().ForEach(Console.WriteLine);
-
             /*var mmf = MemoryMappedFile.CreateNew("MyFileInFile", 1);
             using (var writer = mmf.CreateViewAccessor(0, 1))
             {

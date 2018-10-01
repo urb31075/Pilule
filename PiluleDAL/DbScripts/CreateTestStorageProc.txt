@@ -1,0 +1,6 @@
+﻿CREATE DEFINER = 'developer'@'192.168.207.70'
+PROCEDURE Dupel.TestStorageProc(IN maxId INT, OUT cnt INT)
+BEGIN
+  select * from Dupel.GoodsDictionary where id <= maxId;
+  select COUNT(*) into cnt  from Dupel.GoodsDictionary where id <= maxId;
+END

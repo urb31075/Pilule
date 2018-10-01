@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MasterDetailGrid
+namespace PiluleDebug
 {
+    using PiluleDebug;
+
     static class Program
     {
         /// <summary>
