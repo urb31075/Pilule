@@ -29,8 +29,8 @@ namespace PiluleDAL
         /// <summary>
         /// The connection string.
         /// </summary>
-        private const string ConnectionString = @"User Id=developer; pwd=dupel; Host=192.168.168.7;Character Set=utf8; SslMode = none;";
-        //private const string ConnectionString = @"User Id=pilule; pwd=xxxxxx; Host=urb31075.ru; Port=3306; Character Set=utf8; SslMode = none;";
+        //private const string ConnectionString = @"User Id=developer; pwd=dupel; Host=192.168.168.7;Character Set=utf8; SslMode = none;";
+        private const string ConnectionString = @"User Id=pilule; pwd=xxxxx; Host=urb31075.ru; Port=3306; Character Set=utf8; SslMode = none;";
 
         /// <summary>
         /// Gets the last error.
@@ -127,6 +127,29 @@ namespace PiluleDAL
             }
         }
 
+
+        public static GoodsDictionary GetFirstGoodsByTemplate(string template)
+        {
+            try
+            {
+                using (IDbConnection db = new MySqlConnection(ConnectionString))
+                {
+                    var sql = $"Select * From Dupel.GoodsDictionary Where Name like '{template}%' order by Name";
+                    var infoList = db.Query<GoodsDictionary>(sql).ToList();
+                    if (infoList.Count > 0)
+                    {
+                        return infoList.First();
+                    }
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LastError = ex.Message;
+                return null;
+            }
+        }
+
         /// <summary>
         /// The get stock balance.
         /// </summary>
@@ -182,14 +205,18 @@ namespace PiluleDAL
         /// <returns>
         /// The The return GoodsDictionary
         /// </returns>
-        public static IEnumerable<GoodsDictionary> GetGoodsDictionary(int id)
+        public static GoodsDictionary GetGoodsDictionary(int id)
         {
             try
             {
                 using (IDbConnection db = new MySqlConnection(ConnectionString))
                 {
                     var infoList = db.Query<GoodsDictionary>("Select * From Dupel.GoodsDictionary where Id = @Id", new { Id = id }).ToList();
-                    return infoList;
+                    if (infoList.Count > 0)
+                    {
+                        return infoList.First();
+                    }
+                    return null;
                 }
             }
             catch (Exception ex)

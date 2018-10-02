@@ -8,13 +8,19 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace MordaWPF
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.Globalization;
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
+    using System.Windows.Media;
+
     using PiluleDataProvider;
+
+    using PiluleDAL;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -31,6 +37,8 @@ namespace MordaWPF
         /// </summary>
         private readonly ObservableCollection<BaskeеtData> baskeеt;
 
+        public int CurrentGoodsId { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:MordaWPF.MainWindow" /> class.
         /// </summary>
@@ -40,11 +48,21 @@ namespace MordaWPF
         public MainWindow(IPiluleDataProvider piluleDataProvider)
         {
             this.piluleDataProvider = piluleDataProvider;
+            //FrameworkCompatibilityPreferences.KeepTextBoxDisplaySynchronizedWithTextProperty = false;
+
             this.InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            this.baskeеt = this.piluleDataProvider.GetData(this.OnBaskeеtChanged);
+            this.baskeеt = new ObservableCollection<BaskeеtData>(); // this.piluleDataProvider.GetData(this.OnBaskeеtChanged);
+
             this.MyGrid.ItemsSource = this.baskeеt;
             this.baskeеt.CollectionChanged += this.OnCollectionChanged;
+            this.OnBaskeеtChanged();
+        }
+
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            this.PaymentButton.IsEnabled = false;
+            this.AddBaskedButton.IsEnabled = false;
         }
 
         /// <summary>
@@ -78,13 +96,24 @@ namespace MordaWPF
         /// </param>
         private void DataGridSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!(this.MyGrid.SelectedItem is BaskeеtData item))
+            var item = this.MyGrid.SelectedItem as BaskeеtData;
+            if (item == null)
             {
+                this.InfoTextBox.Text = string.Empty;
+                this.CodLabel.Content = "Код:";
+                this.PriceLabel.Content = "Цена:";
+                this.AmountLabel.Content = "Кол-во:";
+                this.SummaLabel.Content = "Сумма:";
+                this.NameLabel.Content = string.Empty;
                 return;
             }
 
             this.InfoTextBox.Text = item.ToString();
-            this.InfoLabelBottom.Content = item.Name;
+            this.CodLabel.Content = $"Код: {item.Code}";
+            this.PriceLabel.Content = $"Цена: {item.Price.ToString("#######.##").Replace(",",".")}";
+            this.AmountLabel.Content = $"Кол-во: {item.Amount.ToString("#######.##").Replace(",", ".")}"; 
+            this.SummaLabel.Content = $"Сумма: {(Convert.ToDecimal(item.Amount) * item.Price).ToString("#####.##").Replace(",", ".")}";
+            this.NameLabel.Content = $"{item.Name}";
         }
 
         /// <summary>
@@ -95,7 +124,8 @@ namespace MordaWPF
         /// </param>
         private void RecalculateAmount(bool up)
         {
-            if (!(this.MyGrid.SelectedItem is BaskeеtData item))
+            var item = this.MyGrid.SelectedItem as BaskeеtData;
+            if (item == null)
             {
                 return;
             }
@@ -149,7 +179,47 @@ namespace MordaWPF
         /// </param>
         private void DebugButtonClick(object sender, RoutedEventArgs e)
         {
-            this.baskeеt.Add(this.piluleDataProvider.GetGood(this.OnBaskeеtChanged));
+            if (this.CurrentGoodsId == -1)
+            {
+                this.baskeеt.Add(this.piluleDataProvider.GetGood(this.OnBaskeеtChanged));
+            }
+            else
+            {
+                var goods = PiluleDal.GetGoodsDictionary(this.CurrentGoodsId);
+                if (goods == null)
+                {
+                    return;
+                }
+
+                var basketData = new BaskeеtData(this.OnBaskeеtChanged)
+                                     {
+                                         Id = goods.Id,
+                                         Name = goods.Name,
+                                         Amount = 1,
+                                         Price = goods.Price
+                                     };
+
+                this.baskeеt.Add(basketData);
+                this.DocVid.Content = "Вид документа: продажа (открыт)";
+                this.PaymentButton.IsEnabled = true;
+                this.PaymentButton.Background = new SolidColorBrush(Colors.DarkSeaGreen);
+            }
+        }
+
+        private void PaymentButtonClick(object sender, RoutedEventArgs e)
+        {
+            var paymentWindow = new PaymentWindow(this.baskeеt.Sum(c => c.Summa)) {Owner = this};
+            var result = paymentWindow.ShowDialog();
+            if (result == true)
+            {
+                this.baskeеt.Clear();
+                this.DocVid.Content = "Вид документа: продажа (закрыт)";
+                this.GoodsFilter.Text = string.Empty;
+                this.DataGridSelectionChanged(null, null);
+                this.PaymentButton.IsEnabled = false;
+                this.AddBaskedButton.Background = new SolidColorBrush(Colors.Gainsboro);
+                this.PaymentButton.Background = new SolidColorBrush(Colors.Gainsboro);
+            }
         }
 
         /// <summary>
@@ -162,7 +232,10 @@ namespace MordaWPF
                 return;
             }
 
-            this.TotalSumm.Text = this.baskeеt.Sum(c => c.Summa).ToString(CultureInfo.InvariantCulture);
+            this.DataGridSelectionChanged(null, null);
+
+            this.TotalSumm.Text = this.baskeеt.Sum(c => c.Summa).ToString("#####.##").Replace(",",".");
+            this.PositionAmount.Content =$"Позиций: {this.baskeеt.Count}";
         }
 
         /// <summary>
@@ -177,6 +250,26 @@ namespace MordaWPF
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void GoodsFilterTextChanged(object sender, TextChangedEventArgs e)
+        {
+            this.AddBaskedButton.IsEnabled = false;
+            this.AddBaskedButton.Background = new SolidColorBrush(Colors.Gainsboro);
+            this.CurrentGoodsId = -1;
+            if (this.GoodsFilter.Text.Length > 2)
+            {
+                var template = this.GoodsFilter.Text;
+                var item = PiluleDal.GetFirstGoodsByTemplate(template);
+                if (item == null)
+                {
+                    return;
+                }
+                this.CurrentGoodsId = item.Id;
+                this.NameLabel.Content = $"{item.Code} {item.Name} ({item.Comment})";
+                this.AddBaskedButton.IsEnabled = true;
+                this.AddBaskedButton.Background = new SolidColorBrush(Colors.DarkSeaGreen);
+            }
         }
     }
 }

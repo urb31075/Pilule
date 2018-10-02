@@ -37,11 +37,11 @@
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.CreateDbPage = new System.Windows.Forms.TabPage();
             this.DataPage = new System.Windows.Forms.TabPage();
+            this.TestStorageProcButton = new System.Windows.Forms.Button();
+            this.GetMultiMappingButton = new System.Windows.Forms.Button();
             this.GetStockBalanceButton = new System.Windows.Forms.Button();
             this.MainDataGridView = new System.Windows.Forms.DataGridView();
             this.GetGoodsDictionaryButton = new System.Windows.Forms.Button();
-            this.GetMultiMappingButton = new System.Windows.Forms.Button();
-            this.TestStorageProcButton = new System.Windows.Forms.Button();
             this.MainTabControl.SuspendLayout();
             this.CreateDbPage.SuspendLayout();
             this.DataPage.SuspendLayout();
@@ -67,7 +67,7 @@
             this.InfoListBox.Location = new System.Drawing.Point(152, 6);
             this.InfoListBox.Name = "InfoListBox";
             this.InfoListBox.ScrollAlwaysVisible = true;
-            this.InfoListBox.Size = new System.Drawing.Size(711, 641);
+            this.InfoListBox.Size = new System.Drawing.Size(711, 654);
             this.InfoListBox.TabIndex = 1;
             // 
             // GetDebugValueButton
@@ -103,7 +103,7 @@
             // TestButton
             // 
             this.TestButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.TestButton.Location = new System.Drawing.Point(6, 634);
+            this.TestButton.Location = new System.Drawing.Point(6, 636);
             this.TestButton.Name = "TestButton";
             this.TestButton.Size = new System.Drawing.Size(140, 23);
             this.TestButton.TabIndex = 5;
@@ -156,6 +156,26 @@
             this.DataPage.Text = "Data";
             this.DataPage.UseVisualStyleBackColor = true;
             // 
+            // TestStorageProcButton
+            // 
+            this.TestStorageProcButton.Location = new System.Drawing.Point(358, 7);
+            this.TestStorageProcButton.Name = "TestStorageProcButton";
+            this.TestStorageProcButton.Size = new System.Drawing.Size(109, 23);
+            this.TestStorageProcButton.TabIndex = 4;
+            this.TestStorageProcButton.Text = "TestStorageProc";
+            this.TestStorageProcButton.UseVisualStyleBackColor = true;
+            this.TestStorageProcButton.Click += new System.EventHandler(this.TestStorageProcButtonClick);
+            // 
+            // GetMultiMappingButton
+            // 
+            this.GetMultiMappingButton.Location = new System.Drawing.Point(247, 6);
+            this.GetMultiMappingButton.Name = "GetMultiMappingButton";
+            this.GetMultiMappingButton.Size = new System.Drawing.Size(105, 23);
+            this.GetMultiMappingButton.TabIndex = 3;
+            this.GetMultiMappingButton.Text = "GetMultiMapping";
+            this.GetMultiMappingButton.UseVisualStyleBackColor = true;
+            this.GetMultiMappingButton.Click += new System.EventHandler(this.GetMultiMappingButtonClick);
+            // 
             // GetStockBalanceButton
             // 
             this.GetStockBalanceButton.Location = new System.Drawing.Point(134, 6);
@@ -186,26 +206,6 @@
             this.GetGoodsDictionaryButton.Text = "GetGoodsDictionary";
             this.GetGoodsDictionaryButton.UseVisualStyleBackColor = true;
             this.GetGoodsDictionaryButton.Click += new System.EventHandler(this.GetGoodsDictionaryButtonClick);
-            // 
-            // GetMultiMappingButton
-            // 
-            this.GetMultiMappingButton.Location = new System.Drawing.Point(247, 6);
-            this.GetMultiMappingButton.Name = "GetMultiMappingButton";
-            this.GetMultiMappingButton.Size = new System.Drawing.Size(105, 23);
-            this.GetMultiMappingButton.TabIndex = 3;
-            this.GetMultiMappingButton.Text = "GetMultiMapping";
-            this.GetMultiMappingButton.UseVisualStyleBackColor = true;
-            this.GetMultiMappingButton.Click += new System.EventHandler(this.GetMultiMappingButtonClick);
-            // 
-            // TestStorageProcButton
-            // 
-            this.TestStorageProcButton.Location = new System.Drawing.Point(358, 7);
-            this.TestStorageProcButton.Name = "TestStorageProcButton";
-            this.TestStorageProcButton.Size = new System.Drawing.Size(109, 23);
-            this.TestStorageProcButton.TabIndex = 4;
-            this.TestStorageProcButton.Text = "TestStorageProc";
-            this.TestStorageProcButton.UseVisualStyleBackColor = true;
-            this.TestStorageProcButton.Click += new System.EventHandler(this.TestStorageProcButtonClick);
             // 
             // MainForm
             // 

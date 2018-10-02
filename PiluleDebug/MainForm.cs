@@ -191,7 +191,8 @@ namespace PiluleDebug
         /// </param>
         private void TestButtonClick(object sender, EventArgs e)
         {
-            this.OutLog(DateTime.Now.ToLongTimeString());
+            var x = PiluleDal.GetFirstGoodsByTemplate("Ай");
+            this.OutLog(x.Name);
         }
 
         /// <summary>
@@ -265,7 +266,8 @@ namespace PiluleDebug
         /// </param>
         private void TestStorageProcButtonClick(object sender, EventArgs e)
         {
-            var goodsDictionary = PiluleDal.ExecuteStorageProc(13, out var cnt);
+            int cnt;
+            var goodsDictionary = PiluleDal.ExecuteStorageProc(13, out cnt);
             if (goodsDictionary == null)
             {
                 return;

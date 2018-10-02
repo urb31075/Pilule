@@ -25,7 +25,7 @@ namespace PiluleDataProvider
         /// <summary>
         /// The amount.
         /// </summary>
-        private int amount;
+        private decimal amount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaskeеtData"/> class.
@@ -49,6 +49,8 @@ namespace PiluleDataProvider
         /// </summary>
         public int Id { private get; set; }
 
+        public string Code { get; set; }
+
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
@@ -57,17 +59,16 @@ namespace PiluleDataProvider
         /// <summary>
         /// Gets or sets the amount.
         /// </summary>
-        public int Amount
+        public decimal Amount
         {
-            get => this.amount;
+            get
+            {
+                return this.amount;
+            } 
             set
             {
-                if (value < 0)
-                {
-                    return;
-                }
-
-                this.amount = value;
+                decimal x = value;
+                this.amount = Math.Round(x, 2);
                 this.OnPropertyChanged("Amount");
                 this.OnPropertyChanged("Summa");
                 this.baskeеChenged?.Invoke();
@@ -77,14 +78,17 @@ namespace PiluleDataProvider
         /// <summary>
         /// Gets or sets the price.
         /// </summary>
-        public decimal Price { private get; set; }
+        public decimal Price { get; set; }
 
         /// <summary>
         /// Gets or sets the summa.
         /// </summary>
         public decimal Summa
         {
-            get => this.Amount * this.Price;
+            get
+            {
+                return Convert.ToDecimal(this.Amount) * this.Price;
+            } 
             // ReSharper disable once ValueParameterNotUsed
             set { } // Не удалять! Без это хрени биндинг датагрида выдает эксепшен
         }
@@ -97,7 +101,7 @@ namespace PiluleDataProvider
         /// </returns>
         public override string ToString()
         {
-            return $"{nameof(this.Id)}={this.Id}  {nameof(this.Name)}={this.Name} {nameof(this.Amount)}={this.Amount}";
+            return $"{nameof(this.Id)}={this.Id} {nameof(this.Code)}={this.Code} {nameof(this.Name)}={this.Name} {nameof(this.Amount)}={this.Amount}";
         }
 
         /// <summary>

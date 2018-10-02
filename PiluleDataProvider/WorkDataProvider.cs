@@ -31,10 +31,10 @@ namespace PiluleDataProvider
         {
             var baskeеt = new ObservableCollection<BaskeеtData>
                               {
-                                  new BaskeеtData(onBaskeеtChanged) { Id = 0, Name = "Work Good №1", Amount = 1, Price = 2 },
-                                  new BaskeеtData(onBaskeеtChanged) { Id = 1, Name = "Work Good №2", Amount = 2, Price = 4 },
-                                  new BaskeеtData(onBaskeеtChanged) { Id = 2, Name = "Work Good №3", Amount = 3, Price = 8 },
-                                  new BaskeеtData(onBaskeеtChanged) { Id = 3, Name = "Work Good №4", Amount = 4, Price = 16 }
+                                  new BaskeеtData(onBaskeеtChanged) { Id = 0, Code = "0001", Name = "Work Good №1", Amount = 1, Price = 2 },
+                                  new BaskeеtData(onBaskeеtChanged) { Id = 1, Code = "0002", Name = "Work Good №2", Amount = 2, Price = 4 },
+                                  new BaskeеtData(onBaskeеtChanged) { Id = 2, Code = "0003", Name = "Work Good №3", Amount = 3, Price = 8 },
+                                  new BaskeеtData(onBaskeеtChanged) { Id = 3, Code = "0004", Name = "Work Good №4", Amount = 4, Price = 16 }
                               };
             return baskeеt;
         }

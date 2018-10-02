@@ -101,8 +101,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PaymentWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PaymentWindow.xaml.cs">
+      <DependentUpon>PaymentWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -140,6 +147,10 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PiluleDAL\PiluleDAL.csproj">
+      <Project>{35ca64e6-ce26-4b83-b535-a2d5f7f17e96}</Project>
+      <Name>PiluleDAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PiluleDataProvider\PiluleDataProvider.csproj">
       <Project>{4e17114c-71a3-4c83-ae00-54084c4b914e}</Project>
       <Name>PiluleDataProvider</Name>

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         x:Class="MordaWPF.MainWindow"
         mc:Ignorable="d"
-        Style="{StaticResource RedWindow}" >
+        Style="{StaticResource RedWindow}" Loaded="WindowLoaded" >
 
     <Grid Background="Gainsboro">
         <Grid.RowDefinitions>
@@ -18,14 +18,26 @@
         <Border Grid.Row ="0" Background="Gainsboro" BorderBrush="#FF316AC5" BorderThickness="2" >
             <DataGrid x:Name="MyGrid" SelectionChanged="DataGridSelectionChanged" IsReadOnly="True" AutoGenerateColumns="False" 
                               CanUserResizeColumns="False" CanUserResizeRows="False" GridLinesVisibility="None" HeadersVisibility="Column"
-                              FontSize="16" RowHeight="40" Background="Gainsboro">
+                              FontSize="16" RowHeight="40" Background="Gainsboro" SelectionMode="Single">
+
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
                         <Setter Property="Margin" Value="0"/>
                         <Setter Property="Padding" Value="0"/>
                         <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Background" Value="Gainsboro" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="DodgerBlue"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="CornflowerBlue" />
+                            </Trigger>
+                        </Style.Triggers>
+
                     </Style>
                 </DataGrid.CellStyle>
+
                 <DataGrid.Columns>
                             <DataGridTemplateColumn Header="Наименование" Width="*">
                                 <DataGridTemplateColumn.HeaderStyle>
@@ -38,9 +50,9 @@
                                 </DataGridTemplateColumn.HeaderStyle>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                <TextBox Text ="{Binding Name}"  VerticalContentAlignment="Center" BorderThickness ="0" Background="Gainsboro"/>
+                                <TextBox Text ="{Binding Name}"  VerticalContentAlignment="Center" BorderThickness ="0" Background="Transparent"/>
                                     </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
                             <DataGridTemplateColumn Header="Кол-во" Width="80">
@@ -60,8 +72,8 @@
                                                 <ColumnDefinition Width="20" />
                                             </Grid.ColumnDefinitions>
 
-                                    <TextBox Name="TextBoxValue" Text ="{Binding Amount}" VerticalContentAlignment="Center" TextAlignment="Right" Grid.Column="0"  BorderThickness ="1" Background="Gainsboro"/>
-                                            <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBox Name="TextBoxValue" Text ="{Binding Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=n2}" VerticalContentAlignment="Center" TextAlignment="Right" Grid.Column="0"  BorderThickness ="1"  Background="Transparent"/>
+                                    <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
                                                 <Button x:Name="Increase" Click="AmountUpClick">
                                                     <Image Source="Images/MoveUp.png"/>
                                                 </Button>
@@ -87,7 +99,7 @@
                                 </DataGridTemplateColumn.HeaderStyle>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                <TextBox Text ="{Binding Price}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness ="0" Background="Gainsboro"/>
+                                <TextBox Text ="{Binding Price, StringFormat=n2}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness ="0"  Background="Transparent"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -104,14 +116,14 @@
                                 </DataGridTemplateColumn.HeaderStyle>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                <TextBox Text ="{Binding Summa}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness ="0" Background="Gainsboro"/>
+                                <TextBox Text ="{Binding Summa, StringFormat=n2}"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness ="0"  Background="Transparent"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
                         </DataGrid.Columns>
-                    </DataGrid>
-                </Border>
+            </DataGrid>
+        </Border>
         <Border Grid.Row ="1" Background="#FF316AC5">
             <Grid>
                 <Grid.RowDefinitions>
@@ -124,15 +136,24 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Grid.Row="0" x:Name="CodLabel"        Content="0000000" FontSize="16" Foreground="White"/>
-                <Label Grid.Column="1" Grid.Row="0" x:Name="PriceLabel"      Content="00,00"   FontSize="16" Foreground="White"/>
-                <Label Grid.Column="2" Grid.Row="0" x:Name="AmountLabel"     Content="000,0"   FontSize="16" Foreground="White"/>
-                <Label Grid.Column="3" Grid.Row="0" x:Name="SummaLabel"      Content="0000,00" FontSize="16" Foreground="White"/>
-                <Label Grid.Column="0" Grid.Row="1" x:Name="InfoLabelBottom" Content="####"    FontSize="24" Foreground="White" Grid.ColumnSpan="4"/>
+                <Label Grid.Column="0" Grid.Row="0" x:Name="CodLabel"     Content="code"    FontSize="16" Foreground="White"/>
+                <Label Grid.Column="1" Grid.Row="0" x:Name="PriceLabel"   Content="price"   FontSize="16" Foreground="White"/>
+                <Label Grid.Column="2" Grid.Row="0" x:Name="AmountLabel"  Content="amount"  FontSize="16" Foreground="White"/>
+                <Label Grid.Column="3" Grid.Row="0" x:Name="SummaLabel"   Content="summa"   FontSize="16" Foreground="White"/>
+                <Label Grid.Column="0" Grid.Row="1" x:Name="NameLabel"    Content="name"    FontSize="20" Foreground="White" Grid.ColumnSpan="4"/>
             </Grid>
         </Border>
         <Border Grid.Row ="2" Background="Gainsboro" BorderBrush="#FF316AC5" BorderThickness="2" >
-            <TextBox Text ="000001" FontSize="40" VerticalContentAlignment="Center" Foreground="DarkBlue" Background="Gainsboro"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width ="70*"/>
+                    <ColumnDefinition Width ="15*"/>
+                    <ColumnDefinition Width ="15*"/>                    
+                </Grid.ColumnDefinitions>
+                <TextBox Name="GoodsFilter"     Grid.Column="0" FontSize="24" VerticalContentAlignment="Center" Foreground="DarkBlue" Background="Gainsboro" TextChanged="GoodsFilterTextChanged"/>
+                <Button  Name="AddBaskedButton" Grid.Column="1" Content="В КОРЗИНУ" Click="DebugButtonClick"/>
+                <Button  Name="PaymentButton"   Grid.Column="2" Content="ОПЛАТА" Click="PaymentButtonClick"/>                
+            </Grid>
         </Border>
         <Border Grid.Row ="3" Background="#FF316AC5">
             <Grid>
@@ -145,7 +166,7 @@
                 <Label x:Name="DocNumber"       Grid.Row="1" Content="№ документа:"     HorizontalAlignment="Left"   HorizontalContentAlignment="Left"  FontSize="16" Foreground="White"/>
                 <Label x:Name="PositionAmount"  Grid.Row="2" Content="Позиций:"         HorizontalAlignment="Left"   HorizontalContentAlignment="Left"  FontSize="16" Foreground="White"/>
                 <TextBox x:Name="TotalSummLabel"  Grid.Row="0" Text="Сумма документа:"  HorizontalAlignment="Right"  HorizontalContentAlignment="Right" FontSize="18" VerticalContentAlignment="Center" Foreground="White" Background="#FF316AC5" BorderThickness ="0" IsReadOnly="True" />
-                <TextBox x:Name="TotalSumm"       Grid.Row="1" Text="000,00"            HorizontalAlignment="Right"  HorizontalContentAlignment="Right" FontSize="53" VerticalContentAlignment="Center" Foreground="White" Background="#FF316AC5" BorderThickness ="0" IsReadOnly="True" Grid.RowSpan="2" />
+                <TextBox x:Name="TotalSumm"       Grid.Row="1" Text="000,00"            HorizontalAlignment="Right"  HorizontalContentAlignment="Right" FontSize="44" VerticalContentAlignment="Center" Foreground="White" Background="#FF316AC5" BorderThickness ="0" IsReadOnly="True" Grid.RowSpan="2" />
             </Grid>
 
         </Border>
