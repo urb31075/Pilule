@@ -36,12 +36,15 @@
             this.TestButton = new System.Windows.Forms.Button();
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.CreateDbPage = new System.Windows.Forms.TabPage();
+            this.ReportButton = new System.Windows.Forms.Button();
+            this.ConfigureButton = new System.Windows.Forms.Button();
             this.DataPage = new System.Windows.Forms.TabPage();
             this.TestStorageProcButton = new System.Windows.Forms.Button();
             this.GetMultiMappingButton = new System.Windows.Forms.Button();
             this.GetStockBalanceButton = new System.Windows.Forms.Button();
             this.MainDataGridView = new System.Windows.Forms.DataGridView();
             this.GetGoodsDictionaryButton = new System.Windows.Forms.Button();
+            this.DesignModeCheckBox = new System.Windows.Forms.CheckBox();
             this.MainTabControl.SuspendLayout();
             this.CreateDbPage.SuspendLayout();
             this.DataPage.SuspendLayout();
@@ -127,6 +130,9 @@
             // 
             // CreateDbPage
             // 
+            this.CreateDbPage.Controls.Add(this.DesignModeCheckBox);
+            this.CreateDbPage.Controls.Add(this.ReportButton);
+            this.CreateDbPage.Controls.Add(this.ConfigureButton);
             this.CreateDbPage.Controls.Add(this.InfoListBox);
             this.CreateDbPage.Controls.Add(this.TestButton);
             this.CreateDbPage.Controls.Add(this.GetDebugValueButton);
@@ -140,6 +146,26 @@
             this.CreateDbPage.TabIndex = 0;
             this.CreateDbPage.Text = "CreteDB";
             this.CreateDbPage.UseVisualStyleBackColor = true;
+            // 
+            // ReportButton
+            // 
+            this.ReportButton.Location = new System.Drawing.Point(6, 271);
+            this.ReportButton.Name = "ReportButton";
+            this.ReportButton.Size = new System.Drawing.Size(140, 23);
+            this.ReportButton.TabIndex = 7;
+            this.ReportButton.Text = "Чек";
+            this.ReportButton.UseVisualStyleBackColor = true;
+            this.ReportButton.Click += new System.EventHandler(this.ReportButtonClick);
+            // 
+            // ConfigureButton
+            // 
+            this.ConfigureButton.Location = new System.Drawing.Point(6, 171);
+            this.ConfigureButton.Name = "ConfigureButton";
+            this.ConfigureButton.Size = new System.Drawing.Size(140, 23);
+            this.ConfigureButton.TabIndex = 6;
+            this.ConfigureButton.Text = "Сконфигурировать";
+            this.ConfigureButton.UseVisualStyleBackColor = true;
+            this.ConfigureButton.Click += new System.EventHandler(this.ConfigureButtonClick);
             // 
             // DataPage
             // 
@@ -207,6 +233,18 @@
             this.GetGoodsDictionaryButton.UseVisualStyleBackColor = true;
             this.GetGoodsDictionaryButton.Click += new System.EventHandler(this.GetGoodsDictionaryButtonClick);
             // 
+            // DesignModeCheckBox
+            // 
+            this.DesignModeCheckBox.AutoSize = true;
+            this.DesignModeCheckBox.Checked = true;
+            this.DesignModeCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.DesignModeCheckBox.Location = new System.Drawing.Point(11, 248);
+            this.DesignModeCheckBox.Name = "DesignModeCheckBox";
+            this.DesignModeCheckBox.Size = new System.Drawing.Size(118, 17);
+            this.DesignModeCheckBox.TabIndex = 8;
+            this.DesignModeCheckBox.Text = "Режим дизайнера";
+            this.DesignModeCheckBox.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -217,6 +255,7 @@
             this.Text = "PiluleDebug";
             this.MainTabControl.ResumeLayout(false);
             this.CreateDbPage.ResumeLayout(false);
+            this.CreateDbPage.PerformLayout();
             this.DataPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.MainDataGridView)).EndInit();
             this.ResumeLayout(false);
@@ -239,6 +278,9 @@
         private System.Windows.Forms.Button GetStockBalanceButton;
         private System.Windows.Forms.Button GetMultiMappingButton;
         private System.Windows.Forms.Button TestStorageProcButton;
+        private System.Windows.Forms.Button ConfigureButton;
+        private System.Windows.Forms.Button ReportButton;
+        private System.Windows.Forms.CheckBox DesignModeCheckBox;
     }
 }
 

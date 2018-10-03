@@ -8,10 +8,14 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace ConfigStorage
 {
+    using System;
     using System.Data;
     using System.Data.SQLite;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
+
+    using Dapper;
 
     /// <summary>
     /// The sq lite storage.
@@ -23,13 +27,27 @@ namespace ConfigStorage
         /// </summary>
         private readonly string сonfigFileName;
 
+        private readonly string connectionString;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqLiteStorage"/> class.
+        /// </summary>
+        /// <param name="configFileName">
+        /// The config file name.
+        /// </param>
         public SqLiteStorage(string configFileName)
         {
             this.сonfigFileName = configFileName;
+            this.connectionString = $"Data Source={configFileName}; Version=3;"; // Data Source=d:\\config.sqlite; Version=3;
         }
 
         /// <summary>
-        /// The create config storage.
+        /// Gets the last error.
+        /// </summary>
+        public string LastError { get; private set; }
+
+        /// <summary>
+        /// The create config storage dapper.
         /// </summary>
         /// <returns>
         /// The <see cref="bool"/>.
@@ -37,27 +55,19 @@ namespace ConfigStorage
         public bool CreateConfigStorage()
         {
             this.LastError = string.Empty;
-            if (!File.Exists(this.сonfigFileName))
-            {
-                SQLiteConnection.CreateFile(this.сonfigFileName);
-            }
-
             try
             {
-                var conn = new SQLiteConnection("Data Source=" + this.сonfigFileName + ";Version=3;");
-                conn.Open();
-
-                var cmd = new SQLiteCommand
+                if (!File.Exists(this.сonfigFileName))
                 {
-                    Connection = conn,
-                    CommandText = "CREATE TABLE IF NOT EXISTS Catalog (id INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT, book TEXT)"
-                };
+                    SQLiteConnection.CreateFile(this.сonfigFileName);
+                }
 
-                cmd.ExecuteNonQuery();
-                conn.Close();
-                return true;
+                using (IDbConnection db = new SQLiteConnection(this.connectionString))
+                {
+                    return db.Execute("CREATE TABLE IF NOT EXISTS Config (id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, value TEXT)") == 0;
+                }
             }
-            catch (SQLiteException ex)
+            catch (Exception ex)
             {
                 this.LastError = ex.Message;
                 return false;
@@ -67,8 +77,8 @@ namespace ConfigStorage
         /// <summary>
         /// The read config value.
         /// </summary>
-        /// <param name="valueName">
-        /// The value name.
+        /// <param name="key">
+        /// The key.
         /// </param>
         /// <param name="value">
         /// The value.
@@ -76,44 +86,25 @@ namespace ConfigStorage
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool ReadConfigValue(string valueName, out string value)
+        public bool ReadConfigValue(string key, out string value)
         {
             this.LastError = string.Empty;
             value = string.Empty;
-            var table = new DataTable();
-
-            var conn = new SQLiteConnection("Data Source=" + this.сonfigFileName + ";Version=3;");
-            conn.Open();
-
-            if (conn.State != ConnectionState.Open)
-            {
-                this.LastError = @"Eror open connection with database";
-                return false;
-            }
-
             try
             {
-                const string SqlQuery = "SELECT * FROM Catalog";
-                var adapter = new SQLiteDataAdapter(SqlQuery, conn);
-                adapter.Fill(table);
-
-                if (table.Rows.Count > 0)
+                using (IDbConnection db = new SQLiteConnection(this.connectionString))
                 {
-                    for (var i = 0; i < table.Rows.Count; i++)
+                    var result = db.Query<string>("SELECT value FROM Config WHERE key = @key", new { key }).ToList();
+                    if (result.Count != 1)
                     {
-                        value = table.Rows[i].ItemArray.Aggregate(value, (current, item) => current + item.ToString() + " ");
+                        return false;
                     }
-                }
-                else
-                {
-                    this.LastError = @"Database is empty";
-                    return false;
-                }
 
-                conn.Close();
-                return true;
+                    value = result.First();
+                    return true;
+                }
             }
-            catch (SQLiteException ex)
+            catch (Exception ex)
             {
                 this.LastError = ex.Message;
                 return false;
@@ -121,10 +112,10 @@ namespace ConfigStorage
         }
 
         /// <summary>
-        /// The write config value.
+        /// The add config value dapper.
         /// </summary>
-        /// <param name="valueName">
-        /// The value name.
+        /// <param name="key">
+        /// The key.
         /// </param>
         /// <param name="value">
         /// The value.
@@ -132,47 +123,30 @@ namespace ConfigStorage
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool WriteConfigValue(string valueName, string value)
+        public bool AddConfigValue(string key, string value)
         {
             this.LastError = string.Empty;
             try
             {
-                const string Author = "111";
-                const string Book = "ret111";
-
-                var conn = new SQLiteConnection("Data Source=" + this.сonfigFileName + ";Version=3;");
-                conn.Open();
-                var cmd = new SQLiteCommand
+                using (var db = new SQLiteConnection(this.connectionString))
                 {
-                    Connection = conn,
-                    CommandText = "INSERT INTO Catalog ('author', 'book') values ('" + Author + "' , '" + Book + "')"
-                };
-                cmd.ExecuteNonQuery();
-                conn.Close();
-                return true;
+                    const string SqlQueryUpdate = "UPDATE Config SET value = @value WHERE key = @key";
+                    const string SqlQueryInsert = "INSERT INTO Config ('key', 'value') values (@key, @value)";
+                    string probeValue;
+                    if (this.ReadConfigValue(key, out probeValue))
+                    {
+                        return db.Execute(SqlQueryUpdate, new { key, value }) == 1;
+
+                    }
+
+                    return db.Execute(SqlQueryInsert, new { key, value }) == 1;
+                }
             }
-            catch (SQLiteException ex)
+            catch (Exception ex)
             {
                 this.LastError = ex.Message;
                 return false;
             }
         }
-
-        public bool TestEf(out string value)
-        {
-            value = string.Empty;
-            var x = new cfgEntities();
-            foreach (var items in x.Catalog)
-            {
-                value= $"{items.id} {items.author}  {items.book}";
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Gets the last error.
-        /// </summary>
-        public string LastError { get; private set; }
     }
 }

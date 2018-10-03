@@ -12,9 +12,16 @@ namespace PiluleDebug
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.IO;
     using System.Reflection;
     using System.Windows.Forms;
+
+    using ConfigStorage;
+
+    using FastReport;
+
+    using PiluleDataProvider;
 
     using PiluleDAL;
 
@@ -274,6 +281,88 @@ namespace PiluleDebug
             }
 
             this.MainDataGridView.DataSource = goodsDictionary;
+        }
+
+        private void ConfigureButtonClick(object sender, EventArgs e)
+        {
+            var assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (string.IsNullOrEmpty(assemblyFolder))
+            {
+                this.OutLog("Error! ExecutingAssembly not found");
+                return;
+            }
+
+            var reportFileName = Path.Combine(assemblyFolder, "Docs", "PiluleReport.frx");
+            if (!File.Exists(reportFileName))
+            {
+                this.OutLog("Error! PiluleReport not found!");
+                return;
+            }
+
+            var applicationDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var piluleDataPath = Path.Combine(applicationDataPath, "Pilule");
+            if (!Directory.Exists(piluleDataPath))
+            {
+                Directory.CreateDirectory(piluleDataPath);
+            }
+
+            var dstReportFileName = Path.Combine(piluleDataPath, "PiluleReport.frx");
+            File.Copy(reportFileName, dstReportFileName, true);
+
+            var qsliteStorage = new SqLiteStorage(Path.Combine(piluleDataPath, "config.sqlite"));
+            var result1 = qsliteStorage.CreateConfigStorage();
+            if (!result1)
+            {
+                this.OutLog(qsliteStorage.LastError);
+            }
+
+            var result2 = qsliteStorage.AddConfigValue("user", "urb31075");
+            if (!result2)
+            {
+                this.OutLog(qsliteStorage.LastError);
+            }
+
+            if (result1 && result2)
+            {
+                this.OutLog("Configure Ok!");
+            }
+            else
+            {
+                this.OutLog("Configure Error!");
+            }
+
+        }
+
+        private void ReportButtonClick(object sender, EventArgs e)
+        {
+            var report = new Report();
+            var piluleDataProvider = new FakeDataProvider();
+            var piluleData = piluleDataProvider.GetData(null);
+
+            var applicationDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var piluleDataPath = Path.Combine(applicationDataPath, "Pilule");
+            if (!Directory.Exists(piluleDataPath))
+            {
+                Directory.CreateDirectory(piluleDataPath);
+            }
+
+            var reportPath = Path.Combine(piluleDataPath, "PiluleReport.frx");
+            if (!File.Exists(reportPath))
+            {
+                report.Save(reportPath);
+            }
+
+            report.Load(reportPath);
+            report.RegisterData(piluleData, "PD");
+
+            if (this.DesignModeCheckBox.Checked)
+            {
+                report.Design(false);
+            }
+            else
+            {
+                report.Show(false);
+            }
         }
     }
 }

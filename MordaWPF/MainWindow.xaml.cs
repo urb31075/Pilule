@@ -11,12 +11,15 @@ namespace MordaWPF
     using System;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
-    using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Input;
     using System.Windows.Media;
+
+    using ConfigStorage;
+
+    using FastReport;
 
     using PiluleDataProvider;
 
@@ -48,7 +51,6 @@ namespace MordaWPF
         public MainWindow(IPiluleDataProvider piluleDataProvider)
         {
             this.piluleDataProvider = piluleDataProvider;
-            //FrameworkCompatibilityPreferences.KeepTextBoxDisplaySynchronizedWithTextProperty = false;
 
             this.InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -63,6 +65,11 @@ namespace MordaWPF
         {
             this.PaymentButton.IsEnabled = false;
             this.AddBaskedButton.IsEnabled = false;
+            var applicationDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var sqliteStorage = new SqLiteStorage(Path.Combine(applicationDataPath, "Pilule", "config.sqlite"));
+            string user;
+            var result = sqliteStorage.ReadConfigValue("user", out user);
+            this.InfoTextBox.Text = result ? user : "Error read config!";
         }
 
         /// <summary>
@@ -212,6 +219,21 @@ namespace MordaWPF
             var result = paymentWindow.ShowDialog();
             if (result == true)
             {
+                var applicationDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var reportPath = Path.Combine(applicationDataPath, "Pilule", "PiluleReport.frx");
+                if (!File.Exists(reportPath))
+                {
+                    this.InfoTextBox.Text = "Отсутствует шаблон чека!";
+                }
+                else
+                {
+                    var report = new Report();
+                    report.Load(reportPath);
+                    report.RegisterData(this.baskeеt, "PD");
+                    report.Prepare();
+                    report.ShowPrepared(true);
+                }
+
                 this.baskeеt.Clear();
                 this.DocVid.Content = "Вид документа: продажа (закрыт)";
                 this.GoodsFilter.Text = string.Empty;

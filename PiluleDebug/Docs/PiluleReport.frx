@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/03/2018 15:23:21" ReportInfo.Modified="10/03/2018 17:00:28" ReportInfo.CreatorVersion="2018.3.47.0">
+  <Dictionary>
+    <BusinessObjectDataSource Name="PD" ReferenceName="PD" DataType="System.Collections.ObjectModel.ObservableCollection`1[[PiluleDataProvider.BaskeеtData, PiluleDataProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" Enabled="true">
+      <Column Name="Code" DataType="System.String"/>
+      <Column Name="Name" DataType="System.String"/>
+      <Column Name="Amount" DataType="System.Decimal"/>
+      <Column Name="Price" DataType="System.Decimal"/>
+      <Column Name="Summa" DataType="System.Decimal"/>
+    </BusinessObjectDataSource>
+    <Total Name="TotalSumm" Expression="[PD.Summa]" Evaluator="Data1" PrintOn="DataFooter1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" PaperWidth="100" UnlimitedHeight="true">
+    <ReportTitleBand Name="ReportTitle1" Width="302.4" Height="37.8">
+      <TextObject Name="Text1" Left="9.45" Top="9.45" Width="207.9" Height="18.9" Text="Чек от [Date]"/>
+    </ReportTitleBand>
+    <DataBand Name="Data1" Top="65.49" Width="302.4" Height="18.9" CanGrow="true" DataSource="PD">
+      <TextObject Name="Text2" Width="132.3" Height="18.9" CanGrow="true" GrowToBottom="true" Text="[PD.Name]" Font="Arial, 9pt"/>
+      <TextObject Name="Text3" Left="132.3" Width="47.25" Height="18.9" CanGrow="true" GrowToBottom="true" Text="[PD.Amount]" HorzAlign="Right" Font="Arial, 9pt"/>
+      <TextObject Name="Text4" Left="179.55" Width="66.15" Height="18.9" CanGrow="true" GrowToBottom="true" Text="[PD.Price]" HorzAlign="Right" Font="Arial, 9pt"/>
+      <TextObject Name="Text5" Left="245.7" Width="56.7" Height="18.9" CanGrow="true" GrowToBottom="true" Text="[PD.Summa]" HorzAlign="Right" Font="Arial, 9pt"/>
+      <DataHeaderBand Name="DataHeader1" Top="42.2" Width="302.4" Height="18.9">
+        <TextObject Name="Text6" Width="132.3" Height="18.9" Fill.Color="Gainsboro" CanGrow="true" GrowToBottom="true" Text="Товар" Font="Arial, 9pt"/>
+        <TextObject Name="Text7" Left="132.3" Width="47.25" Height="18.9" Fill.Color="Gainsboro" CanGrow="true" GrowToBottom="true" Text="кол-во" HorzAlign="Right" Font="Arial, 9pt"/>
+        <TextObject Name="Text8" Left="179.55" Width="66.15" Height="18.9" Fill.Color="Gainsboro" CanGrow="true" GrowToBottom="true" Text="цена" HorzAlign="Right" Font="Arial, 9pt"/>
+        <TextObject Name="Text9" Left="245.7" Width="56.7" Height="18.9" Fill.Color="Gainsboro" CanGrow="true" GrowToBottom="true" Text="сумма" HorzAlign="Right" Font="Arial, 9pt"/>
+      </DataHeaderBand>
+      <DataFooterBand Name="DataFooter1" Top="88.79" Width="302.4" Height="18.9">
+        <TextObject Name="Text10" Left="132.3" Width="113.4" Height="18.9" Text="Итого:" HorzAlign="Right" Font="Arial, 9pt"/>
+        <TextObject Name="Text11" Left="245.7" Width="56.7" Height="18.9" Text="[TotalSumm]" Font="Arial, 9pt"/>
+      </DataFooterBand>
+    </DataBand>
+  </ReportPage>
+</Report>
