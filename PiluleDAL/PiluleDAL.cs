@@ -30,7 +30,7 @@ namespace PiluleDAL
         /// The connection string.
         /// </summary>
         //private const string ConnectionString = @"User Id=developer; pwd=dupel; Host=192.168.168.7;Character Set=utf8; SslMode = none;";
-        private const string ConnectionString = @"User Id=pilule; pwd=12345; Host=urb31075.ru; Port=3306; Character Set=utf8; SslMode = none;";
+        private const string ConnectionString = @"User Id=pilule; pwd=xxxxx; Host=urb31075.ru; Port=3306; Character Set=utf8; SslMode = none;";
 
         /// <summary>
         /// Gets the last error.
